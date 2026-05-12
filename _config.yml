@@ -1,0 +1,6 @@
+remote_theme: mmistakes/minimal-mistakes
+minimal_mistakes_skin: dark
+title: "osgood"
+locale: ko-KR
+plugins:
+  - jekyll-include-cache
