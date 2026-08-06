@@ -30,6 +30,10 @@ plugins:
 paginate: 5
 paginate_path: /page:num/
 
+category_archive:
+  type: liquid
+  path: /posts/
+
 defaults:
   - scope:
       path: ""
