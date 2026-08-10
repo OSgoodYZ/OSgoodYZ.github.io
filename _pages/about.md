@@ -12,9 +12,9 @@ toc_sticky: true
 
 ## 기술 스택
 
-- **언어**: C++, C, Objective-C++
+- **언어**: C++, C, Objective-C++, C#
 - **그래픽스 API**: Vulkan, Metal, OpenGL ES 3.0 (GLSL, HLSL)
-- **엔진 / 툴**: Unity, RenderDoc
+- **엔진 / 툴**: Unity, UnReal, RenderDoc, Nsight, Android GPU Inspector, Sokatoa
 
 ## 경력
 
