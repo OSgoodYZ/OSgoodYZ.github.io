@@ -6,8 +6,8 @@
 
 // 사이드바(좌: 프로필, 우: 목차)가 붙는 기준 폭을 1024px → 1200px로 올림.
 // 창을 중간 폭으로 줄였을 때 본문이 양쪽 사이드바 사이에 끼어 좁아지는 대신
-// 한 단 레이아웃으로 재배치되게 함. (테마 기본값: $large: 64em)
-$large: 75em;
+// 한 단 레이아웃으로 재배치되게 함. (테마 기본값: $large: 1024px — px 단위 필수)
+$large: 1200px;
 
 @import "minimal-mistakes/skins/{{ site.minimal_mistakes_skin | default: 'default' }}"; // skin
 @import "minimal-mistakes"; // main partials
