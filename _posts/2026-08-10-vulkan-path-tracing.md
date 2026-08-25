@@ -425,6 +425,6 @@ closest hit을 "표면 정보를 채워 돌아오는 함수"로 두고 경로 �
 
 ![Ray Tracing Sample — DragonAttenuation 유리 드래곤](/assets/images/vulkan-path-tracing-dragon.png)
 
-`DragonAttenuation` 유리 드래곤을 렌더링한 모습입니다. Beer-Lambert 감쇠로 두께가 두꺼운 부위일수록 색이 진해지는 것과, 유리 그림자가 완전히 검지 않고 흐리게 지는 것을 확인할 수 있습니다. 2560×1369 해상도, 최대 8바운스, SPP 1 기준 475 FPS(2.1 ms/frame)로 동작합니다.
+`DragonAttenuation` 유리 드래곤을 렌더링한 모습입니다. Beer-Lambert 감쇠로 두께가 두꺼운 부위일수록 색이 진해지는 것과, 유리 그림자가 완전히 검지 않고 흐리게 지는 것을 확인할 수 있습니다. 2560×1369 해상도, 최대 8바운스, SPP 1 기준 484 FPS(2.1 ms/frame)로 동작합니다.
 
 전체 코드는 [OGHypeEngine 저장소](https://github.com/OSgoodYZ/OGHypeEngine)에서 볼 수 있습니다.
