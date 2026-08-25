@@ -6,7 +6,7 @@ toc: true
 toc_sticky: true
 ---
 
-개인 프로젝트로 만들고 있는 Vulkan 렌더링 엔진 OGHypeEngine에 `VK_KHR_ray_tracing_pipeline` 기반 패스 트레이서를 구현했습니다. glTF 샘플 모델인 `DragonAttenuation`의 유리 드래곤 — 투명한 재질에 두께에 따른 볼륨 감쇠가 들어간 모델 — 을 제대로 렌더링하는 것이 목표였습니다.
+개인 프로젝트로 만들고 있는 Vulkan 렌더링 엔진 [OGHypeEngine](https://github.com/OSgoodYZ/OGHypeEngine)에 `VK_KHR_ray_tracing_pipeline` 기반 패스 트레이서를 구현했습니다. glTF 샘플 모델인 `DragonAttenuation`의 유리 드래곤 — 투명한 재질에 두께에 따른 볼륨 감쇠가 들어간 모델 — 을 제대로 렌더링하는 것이 목표였습니다.
 
 Vulkan RT 확장의 기초적인 사용법(BLAS는 무엇인가 같은)은 다루지 않습니다. 그건 이미 좋은 자료가 많으니, 여기서는 **왜 그렇게 짰는지**에 집중하겠습니다.
 
@@ -421,4 +421,10 @@ closest hit을 "표면 정보를 채워 돌아오는 함수"로 두고 경로 �
 - **다중 광원과 광원 샘플링** — 현재는 점광원 하나를 구로 근사한 게 전부입니다.
 - **TLAS 갱신** — `updateTLAS()`가 아직 비어 있습니다. 동적 씬을 하려면 `ALLOW_UPDATE` 플래그와 함께 채워야 합니다.
 
-<!-- TODO: 렌더 결과 스크린샷 추가 (유리 드래곤 / 감쇠 on-off 비교 / 누적 프레임별 노이즈 감소) -->
+## 렌더 결과
+
+![Ray Tracing Sample — DragonAttenuation 유리 드래곤](/assets/images/vulkan-path-tracing-dragon.png)
+
+`DragonAttenuation` 유리 드래곤을 렌더링한 모습입니다. Beer-Lambert 감쇠로 두께가 두꺼운 부위일수록 색이 진해지는 것과, 유리 그림자가 완전히 검지 않고 흐리게 지는 것을 확인할 수 있습니다. 2560×1369 해상도, 최대 8바운스, SPP 1 기준 475 FPS(2.1 ms/frame)로 동작합니다.
+
+전체 코드는 [OGHypeEngine 저장소](https://github.com/OSgoodYZ/OGHypeEngine)에서 볼 수 있습니다.
