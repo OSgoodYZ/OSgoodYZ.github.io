@@ -4,3 +4,4 @@ _drafts/
 .sass-cache/
 Gemfile.lock
 vendor/
+.worktrees
