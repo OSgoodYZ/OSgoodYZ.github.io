@@ -4,6 +4,7 @@ categories: [Graphics]
 tags: [Vulkan, RayTracing, PathTracing, GLSL]
 toc: true
 toc_sticky: true
+wip: true
 ---
 
 개인 프로젝트로 만들고 있는 Vulkan 렌더링 엔진 [OGHypeEngine](https://github.com/OSgoodYZ/OGHypeEngine)에 `VK_KHR_ray_tracing_pipeline` 기반 패스 트레이서를 구현했습니다. glTF 샘플 모델인 `DragonAttenuation`의 유리 드래곤 — 투명한 재질에 두께에 따른 볼륨 감쇠가 들어간 모델 — 을 제대로 렌더링하는 것이 목표였습니다.

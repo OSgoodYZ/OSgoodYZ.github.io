@@ -17,3 +17,14 @@ html {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+// 프론트매터 `wip: true`인 글의 제목 아래 메타 줄에 붙는 WIP 뱃지 (_includes/page__meta.html)
+.page__meta-wip {
+  display: inline-block;
+  padding: 0 0.5em;
+  border-radius: $border-radius;
+  background-color: $warning-color;
+  color: #fff;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+}
