@@ -5,7 +5,6 @@ subcategory: Rendering
 tags: [Metal, MetalFX, Upscaling, TAA, Apple, iOS, macOS]
 toc: true
 toc_sticky: true
-wip: true
 ---
 
 업스케일링은 이제 PC·콘솔 렌더러의 기본이 되었습니다. DLSS, FSR, XeSS 같은 이름은 익숙한데, Apple 플랫폼의 답인 **MetalFX**는 상대적으로 덜 알려져 있습니다. 그런데 실제로 뜯어보면 입력도, 요구 조건도, 실수하는 지점도 다른 업스케일러와 거의 같습니다. Apple 스스로도 "다른 플랫폼에서 업스케일러를 이미 지원하는 엔진이라면 MetalFX 통합은 코드가 많이 필요하지 않다"고 말합니다.
