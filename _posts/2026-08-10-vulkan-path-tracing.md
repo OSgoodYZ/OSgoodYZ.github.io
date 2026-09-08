@@ -1,6 +1,7 @@
 ---
 title: "Vulkan 하드웨어 레이트레이싱으로 패스 트레이서 만들기"
 categories: [Graphics]
+subcategory: Rendering
 tags: [Vulkan, RayTracing, PathTracing, GLSL]
 toc: true
 toc_sticky: true

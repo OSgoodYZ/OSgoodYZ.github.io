@@ -34,6 +34,10 @@ category_archive:
   type: liquid
   path: /posts/
 
+tag_archive:
+  type: liquid
+  path: /tags/
+
 defaults:
   - scope:
       path: ""

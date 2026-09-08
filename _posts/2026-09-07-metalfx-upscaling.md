@@ -1,6 +1,7 @@
 ---
 title: "MetalFX 업스케일링 — 스페이셜·템포럴 스케일러의 원리와 통합 포인트"
 categories: [Graphics]
+subcategory: Rendering
 tags: [Metal, MetalFX, Upscaling, TAA, Apple, iOS, macOS]
 toc: true
 toc_sticky: true

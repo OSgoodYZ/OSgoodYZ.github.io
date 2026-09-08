@@ -28,3 +28,20 @@ html {
   font-weight: bold;
   letter-spacing: 0.05em;
 }
+
+// Posts 페이지에서 카테고리(h2) 아래에 오는 소분류(subcategory) 제목 (_layouts/categories.html)
+.taxonomy__subtitle {
+  margin: 1.5em 0 0;
+  font-size: $type-size-6;
+  color: $muted-text-color;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+// 글 하단 분류 줄에서 카테고리 뱃지와 소분류 뱃지 사이의 "›" 구분자 (_includes/category-list.html)
+.page__taxonomy-sep {
+  display: inline-block;
+  margin-inline-end: 5px;
+  margin-bottom: 8px;
+  color: $muted-text-color;
+}
