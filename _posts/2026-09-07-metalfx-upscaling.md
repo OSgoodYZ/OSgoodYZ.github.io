@@ -42,12 +42,12 @@ MetalFX는 2022년(iOS 16 / macOS 13)에 두 개의 스케일러로 출발했고
 ```
 디스크립터를 만들고 포맷·크기를 채운다
   → 디스크립터에서 효과 인스턴스를 만든다 (비쌈, 시작 시 한 번)
-  → 매 프레임: 입력 텍스처들을 프로퍼티에 꽂고 encode(commandBuffer:)
+  → 매 프레임: 입력 텍스처들을 프로퍼티에 꽂고 encodeToCommandBuffer:
 ```
 
 인스턴스 생성이 비싸다는 점은 문서가 반복해서 강조합니다. **앱 시작 시 또는 디스플레이 해상도가 바뀔 때만** 만들고, 프레임마다 재사용해야 합니다. 이유는 뒤(5절)에서 다시 나옵니다.
 
-프레임워크가 iOS 16부터 있다고 해서 모든 기기가 지원하는 건 아닙니다. 초기에는 M1 이상 Mac과 M1 iPad만 대상이었고, iPhone 지원은 WWDC23에서 추가되었습니다. 그래서 반드시 `supportsDevice(_:)`로 확인하고 폴백 경로를 둬야 합니다.
+프레임워크가 iOS 16부터 있다고 해서 모든 기기가 지원하는 건 아닙니다. 초기에는 M1 이상 Mac과 M1 iPad만 대상이었고, iPhone 지원은 WWDC23에서 추가되었습니다. 그래서 반드시 `supportsDevice:`로 확인하고 폴백 경로를 둬야 합니다.
 
 ## 3. 스페이셜 스케일러
 
@@ -61,27 +61,28 @@ MetalFX는 2022년(iOS 16 / macOS 13)에 두 개의 스케일러로 출발했고
 
 | 모드 | 의미 |
 |---|---|
-| `.perceptual` | 톤매핑 끝난 0~1 sRGB 입력. **성능 최상, 권장** |
-| `.linear` | 리니어 컬러 공간 |
-| `.hdr` | HDR 컬러 공간 |
+| `MTLFXSpatialScalerColorProcessingModePerceptual` | 톤매핑 끝난 0~1 sRGB 입력. **성능 최상, 권장** |
+| `MTLFXSpatialScalerColorProcessingModeLinear` | 리니어 컬러 공간 |
+| `MTLFXSpatialScalerColorProcessingModeHDR` | HDR 컬러 공간 |
 
 에지 판정은 사람 눈이 보는 대로(지각적 공간에서) 하는 게 가장 잘 맞고, 8비트 sRGB는 대역폭도 가장 작습니다. 그래서 perceptual 모드가 기본 권장입니다.
 
-```swift
-let desc = MTLFXSpatialScalerDescriptor()
-desc.inputWidth  = 960;  desc.inputHeight  = 540
-desc.outputWidth = 1920; desc.outputHeight = 1080
-desc.colorTextureFormat  = .bgra8Unorm_srgb
-desc.outputTextureFormat = .bgra8Unorm_srgb
-desc.colorProcessingMode = .perceptual          // 톤매핑 끝난 0~1 sRGB
+```objc
+MTLFXSpatialScalerDescriptor *desc = [MTLFXSpatialScalerDescriptor new];
+desc.inputWidth  = 960;  desc.inputHeight  = 540;
+desc.outputWidth = 1920; desc.outputHeight = 1080;
+desc.colorTextureFormat  = MTLPixelFormatBGRA8Unorm_sRGB;
+desc.outputTextureFormat = MTLPixelFormatBGRA8Unorm_sRGB;
+desc.colorProcessingMode = MTLFXSpatialScalerColorProcessingModePerceptual;  // 톤매핑 끝난 0~1 sRGB
 
-guard MTLFXSpatialScalerDescriptor.supportsDevice(device),
-      let spatial = desc.makeSpatialScaler(device: device) else { /* 폴백 */ }
+if (![MTLFXSpatialScalerDescriptor supportsDevice:device]) { /* 폴백 */ }
+id<MTLFXSpatialScaler> spatial = [desc newSpatialScalerWithDevice:device];
+if (!spatial) { /* 폴백 */ }
 
 // 매 프레임
-spatial.colorTexture  = tonemappedColor
-spatial.outputTexture = upscaledColor           // private storage 필수
-spatial.encode(commandBuffer: cmd)
+spatial.colorTexture  = tonemappedColor;
+spatial.outputTexture = upscaledColor;           // private storage 필수
+[spatial encodeToCommandBuffer:cmd];
 ```
 
 **쓸 곳** — 이미 잘 튜닝된 AA가 있거나, 모션 벡터·뎁스를 뽑을 수 없는 렌더러(UI 위주 앱, 2D, 비디오, 간단한 3D). Apple의 표현을 빌리면 "필요한 입력이 없거나 이미 좋은 AA가 있다면 스페이셜을 고려하라"입니다.
@@ -111,16 +112,16 @@ Apple의 권장은 구체적입니다.
 
 지터 오프셋은 항상 **[-0.5, 0.5] 픽셀** 범위이고, 정해진 개수 안에서 서로 달라야 합니다(같은 위치를 두 번 찍으면 그만큼 정보가 낭비됩니다). Halton처럼 저불일치(low-discrepancy) 시퀀스를 쓰는 이유는 적은 개수로도 픽셀 안을 고르게 덮기 때문입니다.
 
-```swift
-func halton(_ index: Int, _ base: Int) -> Float {
-    var f: Float = 1, r: Float = 0, i = index
-    while i > 0 { f /= Float(base); r += f * Float(i % base); i /= base }
-    return r
+```objc
+static float halton(int index, int base) {
+    float f = 1, r = 0;
+    for (int i = index; i > 0; i /= base) { f /= base; r += f * (i % base); }
+    return r;
 }
 
 // 프레임 n의 지터. 픽셀 단위, [-0.5, 0.5)
-let n = frameIndex % 32 + 1
-let jitter = SIMD2<Float>(halton(n, 2) - 0.5, halton(n, 3) - 0.5)
+int n = frameIndex % 32 + 1;
+simd_float2 jitter = simd_make_float2(halton(n, 2) - 0.5f, halton(n, 3) - 0.5f);
 ```
 
 이 지터를 렌더링에 적용하는 방법은 TAA와 같습니다. 픽셀 오프셋을 NDC 단위(`2 * jitter / 렌더해상도`)로 바꿔 투영 행렬의 x·y 평행이동 성분에 더합니다. 그러면 씬 전체가 서브픽셀만큼 밀려 그려집니다.
@@ -156,9 +157,9 @@ motion -= jitterPrevious - jitterCurrent;
 
 이 값은 NDC 단위(폭 2)이므로 픽셀로 바꾸려면 x에 `W/2`를 곱합니다. y는 NDC가 위쪽 양수, 픽셀이 아래쪽 양수라 `-H/2`입니다.
 
-```swift
-scaler.motionVectorScaleX =  Float(renderW) / 2
-scaler.motionVectorScaleY = -Float(renderH) / 2
+```objc
+scaler.motionVectorScaleX =  (float)renderW / 2;
+scaler.motionVectorScaleY = -(float)renderH / 2;
 ```
 
 반대로 엔진이 `ndcCurrent - ndcPrevious`(이전→현재)로 저장한다면 스케일을 `(-W/2, +H/2)`로 주면 됩니다. WWDC22 세션의 예시가 정확히 이 경우로, 1080p에서 `(-960, 540)`을 넣는 장면이 나옵니다. 셰이더를 고칠 필요가 없습니다.
@@ -169,7 +170,7 @@ scaler.motionVectorScaleY = -Float(renderH) / 2
 
 뎁스는 "이전 프레임에 가려져 있다가 이번에 드러난 영역"을 찾는 데 쓰입니다(disocclusion). 이 영역은 히스토리가 없으니 현재 샘플만 써야 하고, 이걸 못 잡으면 고스팅이 생깁니다. 전경 에지의 AA 우선순위를 정하는 데도 쓰입니다.
 
-필요한 설정은 `isDepthReversed` 하나입니다. Reversed-Z(가까울수록 1, 멀수록 0)를 쓰는 엔진은 반드시 켜야 합니다. 부동소수점 정밀도 때문에 요즘 엔진은 대부분 Reversed-Z이므로 거의 항상 `true`일 겁니다.
+필요한 설정은 `depthReversed` 하나입니다. Reversed-Z(가까울수록 1, 멀수록 0)를 쓰는 엔진은 반드시 켜야 합니다. 부동소수점 정밀도 때문에 요즘 엔진은 대부분 Reversed-Z이므로 거의 항상 `YES`일 겁니다.
 
 ### 4-4. 노출
 
@@ -178,7 +179,7 @@ scaler.motionVectorScaleY = -Float(renderH) / 2
 두 가지 방법이 있습니다.
 
 - **`exposureTexture`** — 1×1 `R16Float` 텍스처. (0,0) 텍셀의 R 채널을 노출값으로 읽어 입력 컬러에 곱합니다. 엔진의 자동 노출이 GPU에서 이 값을 만들고 있다면 그대로 넘기면 됩니다. Apple도 "GPU에서 생성해 텍스처에 쓰는 것"을 성능상 권장합니다.
-- **`isAutoExposureEnabled`** — 디스크립터에서 켜면 MetalFX가 프레임마다 스스로 계산합니다. 이 경우 `exposureTexture`는 무시됩니다.
+- **`autoExposureEnabled`** — 디스크립터에서 켜면 MetalFX가 프레임마다 스스로 계산합니다. 이 경우 `exposureTexture`는 무시됩니다.
 
 WWDC23의 조언은 단순합니다. 1×1 노출 텍스처를 만들 수 있으면 그걸 쓰고, 아니면 자동 노출을 켜서 품질이 나아지는지 보라는 것입니다.
 
@@ -202,7 +203,7 @@ mipBias = log2(렌더 해상도 폭 / 출력 해상도 폭) - 1
 
 ### 4-6. 히스토리 리셋
 
-`reset`을 `true`로 넘기면 스케일러가 이전 프레임 데이터를 버립니다. **첫 프레임, 씬 컷, 급격한 카메라 이동**이 여기에 해당합니다. 컷 직후에 이전 씬의 히스토리가 몇 프레임 남아 있으면 그게 고스팅으로 보입니다. Apple은 WWDC23에서 "카메라 컷에서 히스토리 리셋을 잊지 말라"를 두 번 반복해서 말했습니다.
+`reset`을 `YES`로 넘기면 스케일러가 이전 프레임 데이터를 버립니다. **첫 프레임, 씬 컷, 급격한 카메라 이동**이 여기에 해당합니다. 컷 직후에 이전 씬의 히스토리가 몇 프레임 남아 있으면 그게 고스팅으로 보입니다. Apple은 WWDC23에서 "카메라 컷에서 히스토리 리셋을 잊지 말라"를 두 번 반복해서 말했습니다.
 
 ### 4-7. 리액티브 마스크
 
@@ -216,15 +217,15 @@ mipBias = log2(렌더 해상도 폭 / 출력 해상도 폭) - 1
 | 1.0 | 이 픽셀은 히스토리를 무시하고 현재 프레임만 쓴다 |
 | (0, 1) | 비례해서 섞는다 |
 
-디스크립터에서 `isReactiveMaskTextureEnabled`와 포맷을 켜고, 프레임마다 `reactiveMaskTexture`에 넣습니다. 보통 반투명 패스에서 머티리얼 종류별로 반응도 값을 별도 렌더 타깃에 써서 만듭니다.
+디스크립터에서 `reactiveMaskTextureEnabled`와 포맷을 켜고, 프레임마다 `reactiveMaskTexture`에 넣습니다. 보통 반투명 패스에서 머티리얼 종류별로 반응도 값을 별도 렌더 타깃에 써서 만듭니다.
 
 Apple이 붙인 주의사항 두 가지가 중요합니다. **"입력 해상도를 올리는 게 불가능할 때만 쓰라"**, 그리고 **"다른 업스케일러용으로 튜닝한 마스크를 그대로 쓰지 말라"**. 다른 업스케일러에서 문제였던 영역이 MetalFX에서는 멀쩡할 수 있고, 그 영역의 히스토리를 괜히 버리면 오히려 품질이 나빠집니다.
 
 ### 4-8. 동적 해상도
 
-프레임 시간에 따라 렌더 해상도를 매 프레임 바꾸는 동적 해상도(DRS)도 지원합니다. 디스크립터의 `isInputContentPropertiesEnabled`를 켜고 `inputContentMinScale`/`MaxScale`로 범위를 정한 뒤, 프레임마다 `inputContentWidth/Height`에 **이번 프레임의 실제 렌더 크기**를 넣습니다. 입력 텍스처 자체는 최대 크기로 만들어 두고 일부 영역만 쓰는 방식입니다.
+프레임 시간에 따라 렌더 해상도를 매 프레임 바꾸는 동적 해상도(DRS)도 지원합니다. 디스크립터의 `inputContentPropertiesEnabled`를 켜고 `inputContentMinScale`/`MaxScale`로 범위를 정한 뒤, 프레임마다 `inputContentWidth/Height`에 **이번 프레임의 실제 렌더 크기**를 넣습니다. 입력 텍스처 자체는 최대 크기로 만들어 두고 일부 영역만 쓰는 방식입니다.
 
-지원 범위는 기기마다 다르므로 `supportedInputContentMinScale(device:)` / `MaxScale`로 질의해야 합니다. WWDC23 기준 최대 3배까지 지원하지만, WWDC25의 권장은 명확합니다.
+지원 범위는 기기마다 다르므로 `supportedInputContentMinScale:` / `MaxScale:`로 질의해야 합니다. WWDC23 기준 최대 3배까지 지원하지만, WWDC25의 권장은 명확합니다.
 
 > "최상의 품질을 위해, 필요하지 않다면 최대 스케일을 **2배보다 높게 설정하지 말라**."
 
@@ -244,50 +245,52 @@ Apple이 붙인 주의사항 두 가지가 중요합니다. **"입력 해상도�
   → UI
 ```
 
-컬러 포맷은 HDR 리니어이므로 `rgba16Float`가 표준이고, 모션 벡터는 `rg16Float`, 뎁스는 `depth32Float`가 Apple 예시의 조합입니다.
+컬러 포맷은 HDR 리니어이므로 `MTLPixelFormatRGBA16Float`가 표준이고, 모션 벡터는 `MTLPixelFormatRG16Float`, 뎁스는 `MTLPixelFormatDepth32Float`가 Apple 예시의 조합입니다.
 
 ### 4-10. 정리: 코드로 보면
 
-```swift
+```objc
 // 시작 시 한 번
-let desc = MTLFXTemporalScalerDescriptor()
-desc.inputWidth  = 1280; desc.inputHeight  = 720
-desc.outputWidth = 2560; desc.outputHeight = 1440
-desc.colorTextureFormat  = .rgba16Float      // HDR 리니어, 톤매핑 전
-desc.depthTextureFormat  = .depth32Float
-desc.motionTextureFormat = .rg16Float
-desc.outputTextureFormat = .rgba16Float
-desc.isAutoExposureEnabled = false           // 1x1 노출 텍스처를 직접 넘김
-desc.isInputContentPropertiesEnabled = true  // 동적 해상도
-desc.inputContentMinScale = 1.0
-desc.inputContentMaxScale = 2.0
+MTLFXTemporalScalerDescriptor *desc = [MTLFXTemporalScalerDescriptor new];
+desc.inputWidth  = 1280; desc.inputHeight  = 720;
+desc.outputWidth = 2560; desc.outputHeight = 1440;
+desc.colorTextureFormat  = MTLPixelFormatRGBA16Float;   // HDR 리니어, 톤매핑 전
+desc.depthTextureFormat  = MTLPixelFormatDepth32Float;
+desc.motionTextureFormat = MTLPixelFormatRG16Float;
+desc.outputTextureFormat = MTLPixelFormatRGBA16Float;
+desc.autoExposureEnabled = NO;                          // 1x1 노출 텍스처를 직접 넘김
+desc.inputContentPropertiesEnabled = YES;               // 동적 해상도
+desc.inputContentMinScale = 1.0f;
+desc.inputContentMaxScale = 2.0f;
 
-guard MTLFXTemporalScalerDescriptor.supportsDevice(device),
-      let scaler = desc.makeTemporalScaler(device: device) else { /* 폴백 */ }
+if (![MTLFXTemporalScalerDescriptor supportsDevice:device]) { /* 폴백 */ }
+id<MTLFXTemporalScaler> scaler = [desc newTemporalScalerWithDevice:device];
+if (!scaler) { /* 폴백 */ }
 
 // 출력 텍스처는 스케일러가 요구하는 usage를 포함하고 private 이어야 한다
-let outDesc = MTLTextureDescriptor.texture2DDescriptor(
-    pixelFormat: .rgba16Float, width: 2560, height: 1440, mipmapped: false)
-outDesc.usage = scaler.outputTextureUsage
-outDesc.storageMode = .private
+MTLTextureDescriptor *outDesc =
+    [MTLTextureDescriptor texture2DDescriptorWithPixelFormat:MTLPixelFormatRGBA16Float
+                                                       width:2560 height:1440 mipmapped:NO];
+outDesc.usage = scaler.outputTextureUsage;
+outDesc.storageMode = MTLStorageModePrivate;
 ```
 
-```swift
+```objc
 // 매 프레임
-scaler.reset             = isFirstFrame || isSceneCut
-scaler.colorTexture      = sceneColorHDR        // 지터 적용된 렌더 해상도 컬러
-scaler.depthTexture      = sceneDepth
-scaler.motionTexture     = motionVectors
-scaler.exposureTexture   = exposure1x1
-scaler.outputTexture     = upscaledColor
-scaler.isDepthReversed   = true
-scaler.inputContentWidth  = renderW              // 이번 프레임의 실제 렌더 크기
-scaler.inputContentHeight = renderH
-scaler.jitterOffsetX     = jitter.x              // 픽셀 단위, 부호 규약 확인
-scaler.jitterOffsetY     = jitter.y
-scaler.motionVectorScaleX =  Float(renderW) / 2  // NDC(현재→이전) → 픽셀
-scaler.motionVectorScaleY = -Float(renderH) / 2
-scaler.encode(commandBuffer: cmd)
+scaler.reset             = isFirstFrame || isSceneCut;
+scaler.colorTexture      = sceneColorHDR;        // 지터 적용된 렌더 해상도 컬러
+scaler.depthTexture      = sceneDepth;
+scaler.motionTexture     = motionVectors;
+scaler.exposureTexture   = exposure1x1;
+scaler.outputTexture     = upscaledColor;
+scaler.depthReversed     = YES;
+scaler.inputContentWidth  = renderW;              // 이번 프레임의 실제 렌더 크기
+scaler.inputContentHeight = renderH;
+scaler.jitterOffsetX     = jitter.x;              // 픽셀 단위, 부호 규약 확인
+scaler.jitterOffsetY     = jitter.y;
+scaler.motionVectorScaleX =  (float)renderW / 2;  // NDC(현재→이전) → 픽셀
+scaler.motionVectorScaleY = -(float)renderH / 2;
+[scaler encodeToCommandBuffer:cmd];
 ```
 
 C++ 엔진이라면 metal-cpp에 MetalFX 바인딩이 포함되어 있어(WWDC23부터) 같은 호출을 `scaler->setJitterOffsetX(...)`, `scaler->encodeToCommandBuffer(cmd)` 식으로 그대로 쓸 수 있습니다. Apple은 Objective-C 헤더 대비 측정 가능한 오버헤드가 없다고 밝히고 있습니다.
@@ -297,9 +300,9 @@ C++ 엔진이라면 metal-cpp에 MetalFX 바인딩이 포함되어 있어(WWDC23
 입력의 의미를 맞추는 것 외에, API 계약 수준에서 걸리는 지점들입니다.
 
 - **텍스처 usage 요구사항.** 스케일러는 `colorTextureUsage`, `depthTextureUsage`, `motionTextureUsage`, `outputTextureUsage` 프로퍼티로 각 텍스처에 **최소한 켜져 있어야 하는 `MTLTextureUsage` 비트**를 알려줍니다. 텍스처 디스크립터를 만들 때 이 비트를 포함해야 합니다. 더 켜는 건 상관없습니다.
-- **출력 텍스처는 `.private` 스토리지.** 문서에 명시된 계약입니다.
+- **출력 텍스처는 `MTLStorageModePrivate` 스토리지.** 문서에 명시된 계약입니다.
 - **같은 텍스처 객체를 매 프레임 넘길 필요는 없습니다.** MetalFX는 인스턴스 동일성을 추적하지 않습니다. 디스크립터에 적은 포맷·크기와 일치하면 어떤 텍스처든 됩니다. 프레임마다 다른 링 버퍼 슬롯을 꽂아도 됩니다.
-- **생성은 비쌉니다.** 내부 업스케일러를 컴파일하기 때문입니다. 기본값(`requiresSynchronousInitialization = false`)에서는 인스턴스를 빨리 돌려주고 **더 빠른 업스케일러를 백그라운드에서 컴파일**합니다. 그동안은 느린 임시 업스케일러로 동작하며, 컴파일이 끝나면 자동으로 교체됩니다. **출력 화질은 두 경로가 동일**하고 속도만 다릅니다. 로딩 화면에서 미리 만들어 두고 싶으면 `true`로 켜서 동기적으로 컴파일시키면 됩니다.
+- **생성은 비쌉니다.** 내부 업스케일러를 컴파일하기 때문입니다. 기본값(`requiresSynchronousInitialization = NO`)에서는 인스턴스를 빨리 돌려주고 **더 빠른 업스케일러를 백그라운드에서 컴파일**합니다. 그동안은 느린 임시 업스케일러로 동작하며, 컴파일이 끝나면 자동으로 교체됩니다. **출력 화질은 두 경로가 동일**하고 속도만 다릅니다. 로딩 화면에서 미리 만들어 두고 싶으면 `YES`로 켜서 동기적으로 컴파일시키면 됩니다.
 - **거짓 의존성(false dependency).** 서로 의존하지 않는 두 패스가 같은 리소스를 읽기·쓰기로 바인딩하면 Metal이 불필요한 동기화를 걸고, 이게 MetalFX 성능을 깎습니다. 특히 프레임 사이의 거짓 의존성을 주의하라는 게 WWDC22의 지적입니다.
 - **언트랙 리소스는 `fence`로.** 해저드 트래킹을 꺼둔(untracked) 리소스를 입력으로 쓰면 스케일러의 `fence` 프로퍼티에 펜스를 넘겨 동기화해야 합니다.
 
@@ -331,7 +334,7 @@ C++ 엔진이라면 metal-cpp에 MetalFX 바인딩이 포함되어 있어(WWDC23
 
 위치는 **톤매핑 후**, 즉 UI를 그리는 시점 근처입니다. 그래서 UI 처리가 핵심 설계 문제가 되고, Apple은 세 가지 방식을 제시합니다.
 
-1. **합성된 UI** — UI 없는 프레임 N, UI 있는 프레임 N, 이전 프레임 N-1을 넘깁니다(`isUITextureComposited`). 가장 쉽습니다.
+1. **합성된 UI** — UI 없는 프레임 N, UI 있는 프레임 N, 이전 프레임 N-1을 넘깁니다(`uiTextureComposited`). 가장 쉽습니다.
 2. **오프스크린 UI** — UI를 별도 텍스처(`uiTexture`)로 넘기면 보간된 프레임 위에 얹어줍니다.
 3. **매 프레임 UI** — 보간 프레임에도 UI를 직접 그립니다. 코드 변경이 가장 크지만 UI까지 부드러워집니다.
 
@@ -339,13 +342,13 @@ C++ 엔진이라면 metal-cpp에 MetalFX 바인딩이 포함되어 있어(WWDC23
 
 ### 6-3. Metal 4와 그 이후
 
-Metal 4(iOS 26 / macOS 26)에서는 `MTL4FXTemporalScaler`처럼 `MTL4FX` 접두어가 붙은 프로토콜이 추가되어 Metal 4 커맨드 버퍼에 인코딩할 수 있습니다. 지원 여부는 `supportsMetal4FX(_:)`로 확인하고, 생성은 `makeTemporalScaler(device:compiler:)`로 Metal 4 컴파일러를 넘겨 합니다. 프로퍼티 계약은 기존과 같은 `...Base` 프로토콜을 공유합니다.
+Metal 4(iOS 26 / macOS 26)에서는 `MTL4FXTemporalScaler`처럼 `MTL4FX` 접두어가 붙은 프로토콜이 추가되어 Metal 4 커맨드 버퍼에 인코딩할 수 있습니다. 지원 여부는 `supportsMetal4FX:`로 확인하고, 생성은 `newTemporalScalerWithDevice:compiler:`로 Metal 4 컴파일러를 넘겨 합니다. 프로퍼티 계약은 기존과 같은 `...Base` 프로토콜을 공유합니다.
 
 WWDC26에서는 템포럴 업스케일러가 **재설계**되었습니다. Neural Engine과 M5 Pro/Max의 Neural Accelerator를 함께 사용하는 신경망 업스케일러로, "훨씬 낮은 렌더 해상도에서도 세부를 복원한다"는 것이 Apple의 설명입니다. API 측면에서는 현재 베타 문서 기준으로 다음이 추가되었습니다.
 
 - **서브렉트 처리** — `colorContentOffsetX/Y`, `outputOffsetX/Y` 등으로 텍스처의 일부 영역만 입력·출력으로 씁니다. 동적 해상도를 아틀라스식으로 구현할 때 유용합니다.
-- **지터 포함 모션 벡터** — `isJitteredMotionVectorsEnabled`를 켜면 4-2절의 지터 제거를 엔진이 하지 않아도 MetalFX가 `jitterOffset`으로 직접 빼줍니다.
-- **출력 해상도 모션 벡터** — `isOutputResolutionMotionVectorsEnabled`. 모션 벡터를 출력 해상도로 넘기는 엔진용입니다.
+- **지터 포함 모션 벡터** — `jitteredMotionVectorsEnabled`를 켜면 4-2절의 지터 제거를 엔진이 하지 않아도 MetalFX가 `jitterOffset`으로 직접 빼줍니다.
+- **출력 해상도 모션 벡터** — `outputResolutionMotionVectorsEnabled`. 모션 벡터를 출력 해상도로 넘기는 엔진용입니다.
 - **왜곡 필드** — 프레임 보간기에 배럴 왜곡 같은 포스트 프로세싱 왜곡을 알려주는 `distortionTexture`.
 
 이 항목들은 글 작성 시점(iOS 27 / macOS 27 베타)의 문서 기준이므로 정식 출시 후 이름이 바뀔 수 있습니다.
