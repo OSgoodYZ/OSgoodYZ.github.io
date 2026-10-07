@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="430" viewBox="0 0 800 430" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+  <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#ff7b72"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7ee787"/></marker>
+  <pattern id="g30" width="30" height="30" patternUnits="userSpaceOnUse"><path d="M30 0H0V30" fill="none" stroke="#3b4252" stroke-width="1"/></pattern>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12px}
+  .s{fill:#9aa5b8;font-size:11px}
+  .box{fill:#232833;stroke:#5cd6ff;stroke-width:1.2}
+  .mem{fill:#2a2f3a;stroke:#f6a35a;stroke-width:1.2}
+</style>
+<rect width="800" height="430" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- IMR -->
+<rect x="24" y="20" width="350" height="372" rx="6" fill="none" stroke="#3b4252"/>
+<text x="199" y="46" class="h" text-anchor="middle">데스크톱: 즉시 모드 (IMR)</text>
+<rect x="44" y="80" width="110" height="36" rx="5" class="box"/><text x="99" y="103" class="t" text-anchor="middle">드로우 1</text>
+<rect x="44" y="140" width="110" height="36" rx="5" class="box"/><text x="99" y="163" class="t" text-anchor="middle">드로우 2</text>
+<rect x="44" y="200" width="110" height="36" rx="5" class="box"/><text x="99" y="223" class="t" text-anchor="middle">드로우 3 …</text>
+<text x="99" y="256" class="s" text-anchor="middle">래스터 → 셰이딩 즉시</text>
+<rect x="230" y="80" width="124" height="156" rx="5" class="mem"/>
+<text x="292" y="146" class="t" text-anchor="middle">VRAM 프레임버퍼</text>
+<text x="292" y="164" class="s" text-anchor="middle">컬러 + 뎁스</text>
+<g stroke="#ff7b72" stroke-width="1.5">
+  <line x1="156" y1="92" x2="228" y2="92" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <line x1="156" y1="104" x2="228" y2="104" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <line x1="156" y1="152" x2="228" y2="152" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <line x1="156" y1="164" x2="228" y2="164" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <line x1="156" y1="212" x2="228" y2="212" marker-end="url(#arr)" marker-start="url(#arr)"/>
+  <line x1="156" y1="224" x2="228" y2="224" marker-end="url(#arr)" marker-start="url(#arr)"/>
+</g>
+<text x="192" y="76" class="s" text-anchor="middle" fill="#ff7b72">뎁스 테스트 · 블렌딩마다 읽고 쓰기</text>
+<text x="199" y="292" class="t" text-anchor="middle">오버드로우 횟수만큼 VRAM을 오간다</text>
+<text x="199" y="312" class="s" text-anchor="middle">대역폭이 넉넉한 데스크톱이라 감당한다</text>
+<text x="199" y="346" class="s" text-anchor="middle">렌더 타깃 전환 = 상태 변경 비용 정도</text>
+<text x="199" y="366" class="s" text-anchor="middle">프레임버퍼 읽기 = 텍스처로 복사 후 샘플</text>
+
+<!-- TBDR -->
+<rect x="394" y="20" width="382" height="372" rx="6" fill="none" stroke="#3b4252"/>
+<text x="585" y="46" class="h" text-anchor="middle">모바일: 타일 기반 (TBDR)</text>
+<rect x="410" y="62" width="350" height="40" rx="5" class="box"/>
+<text x="585" y="79" class="t" text-anchor="middle">① 비닝: 렌더패스의 모든 드로우에 정점 셰이더 실행</text>
+<text x="585" y="95" class="s" text-anchor="middle">삼각형을 타일별 목록으로 분류, 목록과 정점 출력은 메모리에</text>
+<line x1="585" y1="102" x2="585" y2="118" stroke="#9aa5b8" stroke-width="1.5" marker-end="url(#ar)"/>
+
+<text x="410" y="138" class="t">② 타일마다:</text>
+<g transform="translate(410,148)">
+  <rect width="120" height="90" fill="#232833"/>
+  <rect x="60" y="30" width="30" height="30" fill="#5cd6ff" fill-opacity="0.5"/>
+  <rect width="120" height="90" fill="url(#g30)"/>
+  <rect width="120" height="90" fill="none" stroke="#3b4252"/>
+</g>
+<text x="470" y="256" class="s" text-anchor="middle">화면 타일 (16×16 ~ 수백 px)</text>
+<line x1="500" y1="193" x2="548" y2="193" stroke="#9aa5b8" stroke-width="1.5" marker-end="url(#ar)"/>
+<rect x="552" y="148" width="208" height="90" rx="5" fill="#232833" stroke="#7ee787" stroke-width="1.2"/>
+<text x="656" y="168" class="t" text-anchor="middle" fill="#7ee787">온칩 타일 메모리</text>
+<text x="656" y="186" class="s" text-anchor="middle">컬러 / 뎁스 로드 (또는 클리어)</text>
+<text x="656" y="202" class="s" text-anchor="middle">걸친 삼각형 전부 셰이딩 · 뎁스 · 블렌딩</text>
+<text x="656" y="218" class="s" text-anchor="middle">오버드로우 열 번이어도 전부 온칩</text>
+<line x1="656" y1="238" x2="656" y2="262" stroke="#7ee787" stroke-width="1.5" marker-end="url(#arg)"/>
+<rect x="552" y="264" width="208" height="34" rx="5" class="mem"/>
+<text x="656" y="279" class="t" text-anchor="middle">VRAM 저장 1회 (resolve)</text>
+<text x="656" y="293" class="s" text-anchor="middle">뎁스는 DONT_CARE면 저장 생략</text>
+
+<text x="585" y="326" class="t" text-anchor="middle" fill="#ff7b72">렌더패스 경계 = 타일 전체를 VRAM에 쓰고 다시 읽기</text>
+<text x="585" y="346" class="s" text-anchor="middle">같은 렌더패스 안에서는 타일 메모리를 직접 읽음 (서브패스 · fb fetch)</text>
+<text x="585" y="366" class="s" text-anchor="middle">정점 출력은 메모리를 거친다 → 보간자 개수가 곧 대역폭</text>
+
+<text x="400" y="416" class="s" text-anchor="middle">HSR / FPK / LRZ 같은 은면 제거는 셰이더가 뎁스에 관여하지 않을 때만(discard · 블렌딩 · 뎁스 출력 없음) 동작한다</text>
+</svg>

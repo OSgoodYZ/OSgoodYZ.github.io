@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="360" viewBox="0 0 800 360" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12px}
+  .s{fill:#9aa5b8;font-size:11px}
+  .fx{fill:#3a4150;stroke:#5a6478;stroke-width:1}
+  .pg{fill:#232833;stroke:#5cd6ff;stroke-width:1.5}
+  .bar{fill:#5cd6ff;fill-opacity:0.5}
+</style>
+<rect width="800" height="360" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">고정 기능 사이에 끼인 셰이더 — 병목은 한 단계에 있다</text>
+
+<!-- stages -->
+<g>
+  <rect x="24" y="56" width="84" height="46" rx="5" class="fx"/>
+  <text x="66" y="76" class="t" text-anchor="middle">정점 페치</text>
+  <text x="66" y="93" class="s" text-anchor="middle">고정</text>
+
+  <rect x="116" y="56" width="92" height="46" rx="5" class="pg"/>
+  <text x="162" y="76" class="t" text-anchor="middle">정점 셰이더</text>
+  <text x="162" y="93" class="s" text-anchor="middle" fill="#5cd6ff">프로그래머블</text>
+
+  <rect x="216" y="56" width="126" height="46" rx="5" class="fx"/>
+  <text x="279" y="76" class="t" text-anchor="middle">조립·클리핑·래스터</text>
+  <text x="279" y="93" class="s" text-anchor="middle">고정 (처리량 한정)</text>
+
+  <rect x="350" y="56" width="96" height="46" rx="5" class="fx" stroke="#7ee787"/>
+  <text x="398" y="76" class="t" text-anchor="middle">Early-Z / Hi-Z</text>
+  <text x="398" y="93" class="s" text-anchor="middle" fill="#7ee787">가려진 픽셀 버림</text>
+
+  <rect x="454" y="56" width="92" height="46" rx="5" class="pg"/>
+  <text x="500" y="76" class="t" text-anchor="middle">픽셀 셰이더</text>
+  <text x="500" y="93" class="s" text-anchor="middle" fill="#5cd6ff">프로그래머블</text>
+
+  <rect x="554" y="56" width="126" height="46" rx="5" class="fx"/>
+  <text x="617" y="76" class="t" text-anchor="middle">Late-Z·블렌딩·ROP</text>
+  <text x="617" y="93" class="s" text-anchor="middle">고정 (처리량 한정)</text>
+
+  <rect x="688" y="56" width="70" height="46" rx="5" fill="#232833" stroke="#9aa5b8" stroke-dasharray="4 3"/>
+  <text x="723" y="83" class="t" text-anchor="middle">렌더 타깃</text>
+</g>
+<g stroke="#9aa5b8" stroke-width="1.5">
+  <line x1="108" y1="79" x2="115" y2="79" marker-end="url(#ar)"/>
+  <line x1="208" y1="79" x2="215" y2="79" marker-end="url(#ar)"/>
+  <line x1="342" y1="79" x2="349" y2="79" marker-end="url(#ar)"/>
+  <line x1="446" y1="79" x2="453" y2="79" marker-end="url(#ar)"/>
+  <line x1="546" y1="79" x2="553" y2="79" marker-end="url(#ar)"/>
+  <line x1="680" y1="79" x2="687" y2="79" marker-end="url(#ar)"/>
+</g>
+
+<!-- utilization bars -->
+<text x="24" y="130" class="s">단계별 사용률 (예)</text>
+<g>
+  <rect x="24" y="138" width="84" height="12" fill="#232833" stroke="#3b4252"/><rect x="24" y="138" width="25" height="12" class="bar"/>
+  <rect x="116" y="138" width="92" height="12" fill="#232833" stroke="#3b4252"/><rect x="116" y="138" width="41" height="12" class="bar"/>
+  <rect x="216" y="138" width="126" height="12" fill="#232833" stroke="#3b4252"/><rect x="216" y="138" width="32" height="12" class="bar"/>
+  <rect x="350" y="138" width="96" height="12" fill="#232833" stroke="#3b4252"/><rect x="350" y="138" width="19" height="12" class="bar"/>
+  <rect x="454" y="138" width="92" height="12" fill="#232833" stroke="#3b4252"/><rect x="454" y="138" width="92" height="12" fill="#ff7b72" fill-opacity="0.7"/>
+  <rect x="554" y="138" width="126" height="12" fill="#232833" stroke="#3b4252"/><rect x="554" y="138" width="50" height="12" class="bar"/>
+</g>
+<text x="500" y="166" class="t" text-anchor="middle" fill="#ff7b72" font-weight="600">100% = 병목</text>
+<text x="24" y="190" class="s">이 상황에서 정점 셰이더를 반으로 줄여도 프레임 시간은 그대로다. 병목인 단계만 줄여야 줄어든다. 최적화의 첫 단계는 어느 단계가 병목인지 찾는 것</text>
+
+<line x1="24" y1="208" x2="776" y2="208" stroke="#3b4252"/>
+
+<!-- Early-Z -->
+<text x="24" y="234" class="h" fill="#7ee787">Early-Z: 뎁스 테스트를 픽셀 셰이더 앞으로 당겨 가려진 픽셀의 셰이딩을 통째로 건너뛴다</text>
+<text x="24" y="262" class="t">동작 조건</text>
+<text x="110" y="262" class="s">① 뎁스 버퍼에 이미 가까운 값이 있어야 한다 → 불투명은 앞→뒤 정렬, 또는 뎁스 프리패스</text>
+<text x="110" y="282" class="s">② 셰이더가 뎁스 결과에 관여하지 않아야 한다 → 셰이더가 끝나기 전에 "이 픽셀이 뎁스를 쓸지" 알 수 있어야 함</text>
+<text x="24" y="312" class="t" fill="#ff7b72">깨뜨리는 것</text>
+<text x="110" y="312" class="s">discard / clip, SV_Depth 출력 → 테스트가 셰이더 뒤(Late-Z)로 밀린다. 알파 테스트 머티리얼이 불투명보다 비싼 이유</text>
+<text x="110" y="332" class="s">모바일의 HSR / FPK / LRZ도 같은 전제로 동작하므로 같은 목록에 더 크게 손해 본다</text>
+</svg>

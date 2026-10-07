@@ -45,3 +45,29 @@ html {
   margin-bottom: 8px;
   color: $muted-text-color;
 }
+
+// 본문의 접는 상세 설명 (<details markdown="1"><summary>…</summary> … </details>).
+// 요약 줄은 클릭할 수 있는 줄처럼 보이게 하고, 펼쳤을 때 본문과 구분선을 둔다.
+.page__content details {
+  margin: 1em 0 1.5em;
+  padding: 0 1em;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+  background-color: mix($background-color, $text-color, 96%);
+
+  summary {
+    padding: 0.6em 0;
+    cursor: pointer;
+    font-weight: bold;
+    color: $muted-text-color;
+  }
+
+  &[open] summary {
+    margin-bottom: 0.8em;
+    border-bottom: 1px solid $border-color;
+  }
+
+  > :last-child {
+    margin-bottom: 1em;
+  }
+}

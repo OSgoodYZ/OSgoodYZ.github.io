@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <pattern id="g16" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M16 0H0V16" fill="none" stroke="#3b4252" stroke-width="1"/></pattern>
+  <pattern id="g36" width="36" height="36" patternUnits="userSpaceOnUse"><path d="M36 0H0V36" fill="none" stroke="#3b4252" stroke-width="1"/></pattern>
+  <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#f6a35a" stroke-width="1.5"/></pattern>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+</style>
+<rect width="800" height="420" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- texture layout -->
+<text x="24" y="30" class="h">① 텍스처는 2D 타일로 저장된다</text>
+<text x="124" y="56" class="s" text-anchor="middle">선형 배치</text>
+<g transform="translate(60,64)">
+  <rect width="128" height="128" fill="#232833"/>
+  <rect x="0" y="32" width="128" height="16" fill="#5cd6ff" fill-opacity="0.35"/>
+  <rect x="0" y="48" width="128" height="16" fill="#5cd6ff" fill-opacity="0.18"/>
+  <rect width="128" height="128" fill="url(#g16)"/>
+  <rect x="48" y="32" width="32" height="32" fill="none" stroke="#f6a35a" stroke-width="2"/>
+  <rect width="128" height="128" fill="none" stroke="#3b4252"/>
+</g>
+<text x="124" y="212" class="s" text-anchor="middle">캐시 라인 = 가로 한 줄</text>
+<text x="124" y="228" class="s" text-anchor="middle">2×2 이웃 픽셀 → 라인 2개</text>
+
+<text x="300" y="56" class="s" text-anchor="middle">타일 배치</text>
+<g transform="translate(236,64)">
+  <rect width="128" height="128" fill="#232833"/>
+  <rect x="32" y="32" width="64" height="64" fill="#5cd6ff" fill-opacity="0.35"/>
+  <rect width="128" height="128" fill="url(#g16)"/>
+  <rect x="48" y="48" width="32" height="32" fill="none" stroke="#f6a35a" stroke-width="2"/>
+  <rect width="128" height="128" fill="none" stroke="#3b4252"/>
+</g>
+<text x="300" y="212" class="s" text-anchor="middle">캐시 라인 = 4×4 블록</text>
+<text x="300" y="228" class="s" text-anchor="middle">2×2 이웃 픽셀 → 라인 1개</text>
+
+<rect x="60" y="250" width="12" height="12" fill="#5cd6ff" fill-opacity="0.35" stroke="#5cd6ff"/>
+<text x="78" y="260" class="s">한 번에 올라오는 캐시 라인</text>
+<rect x="240" y="250" width="12" height="12" fill="none" stroke="#f6a35a" stroke-width="2"/>
+<text x="258" y="260" class="s">이웃 픽셀 4개가 읽는 텍셀</text>
+
+<text x="24" y="294" class="t">밉맵의 성능상 이유: 텍셀:픽셀 비율을 1:1 근처로</text>
+<text x="24" y="312" class="t">유지해 <tspan fill="#5cd6ff">이웃 픽셀이 이웃 텍셀을 읽게</tspan> 한다.</text>
+<text x="24" y="334" class="s">밉맵 없이 멀리 그리면 이웃 픽셀이 수십 텍셀씩 떨어진</text>
+<text x="24" y="350" class="s">곳을 읽어, 라인마다 텍셀 하나만 쓰고 버린다.</text>
+
+<line x1="410" y1="20" x2="410" y2="356" stroke="#3b4252"/>
+
+<!-- quad -->
+<text x="430" y="30" class="h">② 픽셀 셰이더는 2×2 쿼드 단위로 돈다</text>
+<g transform="translate(470,56)">
+  <rect width="144" height="144" fill="#232833"/>
+  <rect x="72" y="36" width="72" height="72" fill="url(#hatch)" fill-opacity="0.9"/>
+  <rect x="72" y="36" width="36" height="36" fill="#5cd6ff" fill-opacity="0.55"/>
+  <polygon points="78,42 104,48 86,68" fill="#f6a35a" stroke="#1c2029" stroke-width="1"/>
+  <rect width="144" height="144" fill="url(#g36)"/>
+  <path d="M72 0V144M0 72H144" stroke="#9aa5b8" stroke-width="1.5" fill="none"/>
+  <rect x="72" y="36" width="72" height="72" fill="none" stroke="#e5e9f0" stroke-width="2"/>
+  <rect width="144" height="144" fill="none" stroke="#3b4252"/>
+</g>
+<text x="630" y="84" class="t">픽셀 하나만 덮는 삼각형</text>
+<rect x="630" y="98" width="12" height="12" fill="#5cd6ff" fill-opacity="0.55" stroke="#5cd6ff"/>
+<text x="648" y="108" class="s">실제로 쓰이는 레인 1개</text>
+<rect x="630" y="118" width="12" height="12" fill="url(#hatch)" stroke="#f6a35a"/>
+<text x="648" y="128" class="s">헬퍼 레인 3개 (결과 버림)</text>
+<text x="630" y="156" class="s">굵은 선 = 쿼드 (2×2)</text>
+
+<text x="430" y="232" class="t">픽셀 하나만 덮어도 쿼드 4개 레인이 전부 실행된다.</text>
+<text x="430" y="252" class="t">픽셀 크기에 가까운 삼각형은 쿼드 효율 25%</text>
+<text x="430" y="270" class="t" fill="#ff7b72" font-weight="600">→ 픽셀 셰이딩 비용 최대 4배</text>
+<text x="430" y="298" class="s">헬퍼 레인이 있는 이유: ddx/ddy가 쿼드 이웃</text>
+<text x="430" y="314" class="s">레인과의 값 차이로 계산되기 때문이다.</text>
+<text x="430" y="332" class="s">발산 분기 안에서는 이웃 레인이 꺼져 있어</text>
+<text x="430" y="348" class="s">밉을 고를 수 없다 → SampleGrad / SampleLevel</text>
+
+<line x1="24" y1="370" x2="776" y2="370" stroke="#3b4252"/>
+<text x="400" y="398" class="t" text-anchor="middle">텍스처는 항상 압축 + 밉맵으로. 픽셀보다 작은 삼각형은 피한다. 분기 안 샘플은 미분값을 밖에서 구해 넘긴다</text>
+</svg>

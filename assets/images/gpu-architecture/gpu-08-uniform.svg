@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="300" viewBox="0 0 800 300" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="arp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c792ea"/></marker>
+  <marker id="aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f6a35a"/></marker>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+  .m{fill:#e5e9f0;font-size:12px;font-family:Consolas,'Courier New',monospace}
+  .lane{fill:#232833;stroke:#9aa5b8;stroke-width:1}
+  .v{fill:#e5e9f0;font-size:12px;font-weight:600;font-family:Consolas,'Courier New',monospace}
+</style>
+<rect width="800" height="300" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">웨이브 전체가 같은 값이면 한 번만 계산한다</text>
+
+<!-- uniform row -->
+<text x="24" y="64" class="m">g_Tints[g_ObjectIndex]</text>
+<text x="24" y="82" class="s">상수 버퍼 값 → 웨이브 균일</text>
+<rect x="250" y="52" width="150" height="40" rx="5" fill="#232833" stroke="#c792ea" stroke-width="1.4"/>
+<text x="325" y="70" class="t" text-anchor="middle" fill="#c792ea">스칼라 유닛</text>
+<text x="325" y="86" class="s" text-anchor="middle">웨이브당 1개 · 로드 1회</text>
+<line x1="400" y1="72" x2="436" y2="72" stroke="#c792ea" stroke-width="1.5" marker-end="url(#arp)"/>
+<g class="lane">
+  <rect x="440" y="56" width="36" height="32" rx="3"/><rect x="480" y="56" width="36" height="32" rx="3"/><rect x="520" y="56" width="36" height="32" rx="3"/><rect x="560" y="56" width="36" height="32" rx="3"/><rect x="600" y="56" width="36" height="32" rx="3"/><rect x="640" y="56" width="36" height="32" rx="3"/><rect x="680" y="56" width="36" height="32" rx="3"/><rect x="720" y="56" width="36" height="32" rx="3"/>
+</g>
+<g class="v" text-anchor="middle" fill="#c792ea">
+  <text x="458" y="77">T3</text><text x="498" y="77">T3</text><text x="538" y="77">T3</text><text x="578" y="77">T3</text><text x="618" y="77">T3</text><text x="658" y="77">T3</text><text x="698" y="77">T3</text><text x="738" y="77">T3</text>
+</g>
+<text x="598" y="108" class="s" text-anchor="middle">결과를 8개 레인에 브로드캐스트</text>
+
+<line x1="24" y1="128" x2="776" y2="128" stroke="#3b4252"/>
+
+<!-- per-lane row -->
+<text x="24" y="162" class="m">g_Tints[materialId]</text>
+<text x="24" y="180" class="s">보간된 정점 속성 → 레인마다 다름</text>
+<rect x="250" y="150" width="150" height="40" rx="5" fill="#232833" stroke="#f6a35a" stroke-width="1.4"/>
+<text x="325" y="168" class="t" text-anchor="middle" fill="#f6a35a">벡터 유닛</text>
+<text x="325" y="184" class="s" text-anchor="middle">레인마다 각자 로드</text>
+<line x1="400" y1="170" x2="436" y2="170" stroke="#f6a35a" stroke-width="1.5" marker-end="url(#aro)"/>
+<g class="lane">
+  <rect x="440" y="154" width="36" height="32" rx="3"/><rect x="480" y="154" width="36" height="32" rx="3"/><rect x="520" y="154" width="36" height="32" rx="3"/><rect x="560" y="154" width="36" height="32" rx="3"/><rect x="600" y="154" width="36" height="32" rx="3"/><rect x="640" y="154" width="36" height="32" rx="3"/><rect x="680" y="154" width="36" height="32" rx="3"/><rect x="720" y="154" width="36" height="32" rx="3"/>
+</g>
+<g class="v" text-anchor="middle" fill="#f6a35a">
+  <text x="458" y="175">T1</text><text x="498" y="175">T3</text><text x="538" y="175">T0</text><text x="578" y="175">T3</text><text x="618" y="175">T7</text><text x="658" y="175">T2</text><text x="698" y="175">T5</text><text x="738" y="175">T1</text>
+</g>
+<text x="598" y="206" class="s" text-anchor="middle">최악의 경우 서로 다른 인덱스를 순서대로 처리하는 루프로 컴파일</text>
+
+<line x1="24" y1="226" x2="776" y2="226" stroke="#3b4252"/>
+<text x="400" y="254" class="t" text-anchor="middle">같은 한 줄, 전혀 다른 비용. 균일한 계산은 복잡해도 거의 공짜, 스레드별 계산은 간단해도 웨이브 전체의 비용</text>
+<text x="400" y="276" class="s" text-anchor="middle">AMD: 스칼라 유닛 + SGPR · NVIDIA: Turing 이후 유니폼 데이터패스. 컴파일러가 "균일하다"고 증명할 수 있어야 한다</text>
+</svg>

@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="340" viewBox="0 0 800 340" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+  .blk{fill:#3a4150;stroke:#5a6478;stroke-width:1}
+  .alu{fill:#5cd6ff;fill-opacity:0.45;stroke:#5cd6ff;stroke-width:1}
+</style>
+<rect width="800" height="340" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">같은 트랜지스터 예산, 다른 선택</text>
+
+<!-- CPU -->
+<rect x="40" y="50" width="340" height="232" rx="6" fill="#232833" stroke="#3b4252"/>
+<text x="210" y="74" class="t" text-anchor="middle" font-weight="600">CPU 코어</text>
+<rect x="60" y="88" width="300" height="150" rx="4" fill="#2a2f3a" stroke="#3b4252"/>
+<rect x="70" y="98" width="180" height="62" rx="3" class="blk"/>
+<text x="160" y="124" class="t" text-anchor="middle">제어 로직</text>
+<text x="160" y="142" class="s" text-anchor="middle">분기 예측 · 비순차 실행 · 스케줄러</text>
+<rect x="260" y="98" width="90" height="130" rx="3" class="blk"/>
+<text x="305" y="158" class="t" text-anchor="middle">L1 / L2</text>
+<text x="305" y="176" class="s" text-anchor="middle">거대한 캐시</text>
+<rect x="70" y="170" width="40" height="58" rx="3" class="alu"/>
+<rect x="117" y="170" width="40" height="58" rx="3" class="alu"/>
+<rect x="164" y="170" width="40" height="58" rx="3" class="alu"/>
+<rect x="211" y="170" width="39" height="58" rx="3" class="alu"/>
+<text x="160" y="204" class="s" text-anchor="middle" fill="#e5e9f0">ALU 몇 개</text>
+<text x="210" y="264" class="s" text-anchor="middle">하나의 흐름을 빨리 끝낸다 → 레이턴시를 <tspan fill="#f6a35a" font-weight="600">줄인다</tspan></text>
+
+<!-- GPU -->
+<rect x="420" y="50" width="340" height="232" rx="6" fill="#232833" stroke="#3b4252"/>
+<text x="590" y="74" class="t" text-anchor="middle" font-weight="600">GPU 연산 유닛 (SM / CU)</text>
+<rect x="440" y="88" width="300" height="150" rx="4" fill="#2a2f3a" stroke="#3b4252"/>
+<rect x="450" y="98" width="280" height="18" rx="3" class="blk"/>
+<text x="590" y="111" class="s" text-anchor="middle" fill="#e5e9f0">스케줄러 (작음)</text>
+<rect x="450" y="124" width="56" height="104" rx="3" class="blk"/>
+<text x="478" y="180" class="s" text-anchor="middle" fill="#e5e9f0">캐시</text>
+<g class="alu">
+  <rect x="516" y="124" width="24" height="22" rx="2"/><rect x="543" y="124" width="24" height="22" rx="2"/><rect x="570" y="124" width="24" height="22" rx="2"/><rect x="597" y="124" width="24" height="22" rx="2"/><rect x="624" y="124" width="24" height="22" rx="2"/><rect x="651" y="124" width="24" height="22" rx="2"/><rect x="678" y="124" width="24" height="22" rx="2"/><rect x="705" y="124" width="24" height="22" rx="2"/>
+  <rect x="516" y="151" width="24" height="22" rx="2"/><rect x="543" y="151" width="24" height="22" rx="2"/><rect x="570" y="151" width="24" height="22" rx="2"/><rect x="597" y="151" width="24" height="22" rx="2"/><rect x="624" y="151" width="24" height="22" rx="2"/><rect x="651" y="151" width="24" height="22" rx="2"/><rect x="678" y="151" width="24" height="22" rx="2"/><rect x="705" y="151" width="24" height="22" rx="2"/>
+  <rect x="516" y="178" width="24" height="22" rx="2"/><rect x="543" y="178" width="24" height="22" rx="2"/><rect x="570" y="178" width="24" height="22" rx="2"/><rect x="597" y="178" width="24" height="22" rx="2"/><rect x="624" y="178" width="24" height="22" rx="2"/><rect x="651" y="178" width="24" height="22" rx="2"/><rect x="678" y="178" width="24" height="22" rx="2"/><rect x="705" y="178" width="24" height="22" rx="2"/>
+  <rect x="516" y="205" width="24" height="22" rx="2"/><rect x="543" y="205" width="24" height="22" rx="2"/><rect x="570" y="205" width="24" height="22" rx="2"/><rect x="597" y="205" width="24" height="22" rx="2"/><rect x="624" y="205" width="24" height="22" rx="2"/><rect x="651" y="205" width="24" height="22" rx="2"/><rect x="678" y="205" width="24" height="22" rx="2"/><rect x="705" y="205" width="24" height="22" rx="2"/>
+</g>
+<text x="590" y="264" class="s" text-anchor="middle">같은 프로그램을 수백만 번 → 레이턴시를 <tspan fill="#5cd6ff" font-weight="600">숨긴다</tspan></text>
+
+<text x="400" y="314" class="t" text-anchor="middle">기다리는 동안 다른 스레드 묶음으로 갈아탄다. 셰이더 최적화 원칙 대부분이 이 한 문장에서 나온다</text>
+</svg>
