@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="445" viewBox="0 0 800 445" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+  <marker id="arg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#7ee787"/></marker>
+  <marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#e5e9f0"/></marker>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+  .m{fill:#e5e9f0;font-size:12.5px;font-family:Consolas,'Courier New',monospace}
+</style>
+<rect width="800" height="445" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">샘플 S가 중심 C에 얼마나 기여하는가: "앞인가 뒤인가" × "속도가 거리 d까지 닿는가"</text>
+
+<!-- axes -->
+<line x1="70" y1="262" x2="760" y2="262" stroke="#6c7a92" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="600" y="282" class="s">화면 위 샘플링 선 (이웃 맥스 방향)</text>
+<line x1="70" y1="262" x2="70" y2="60" stroke="#6c7a92" stroke-width="1.5" marker-end="url(#ar)"/>
+<text x="78" y="68" class="s">카메라에 가까움 (앞)</text>
+<text x="78" y="256" class="s">멀다 (뒤)</text>
+
+<!-- center C -->
+<circle cx="500" cy="160" r="9" fill="#e5e9f0"/>
+<text x="500" y="186" class="t" text-anchor="middle">C (중심)</text>
+<line x1="512" y1="160" x2="552" y2="160" stroke="#e5e9f0" stroke-width="2" marker-end="url(#arw)"/>
+<text x="534" y="150" class="s" text-anchor="middle">v_C</text>
+<line x1="500" y1="262" x2="500" y2="170" stroke="#9aa5b8" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+
+<!-- S1: front, moving -->
+<circle cx="250" cy="100" r="8" fill="#7ee787"/>
+<line x1="262" y1="100" x2="360" y2="100" stroke="#7ee787" stroke-width="2" marker-end="url(#arg)"/>
+<text x="310" y="90" class="s" text-anchor="middle" fill="#7ee787">v_S1 (길다)</text>
+<text x="250" y="130" class="t" text-anchor="middle" fill="#7ee787">S1: 앞 + 움직임</text>
+<text x="250" y="146" class="s" text-anchor="middle">S1의 색이 C 위로 번져온다</text>
+<text x="250" y="162" class="s" text-anchor="middle">가중치 = reach(|v_S1|, d)</text>
+
+<!-- S3: same depth static -->
+<circle cx="390" cy="160" r="8" fill="#6c7a92"/>
+<text x="390" y="186" class="t" text-anchor="middle" fill="#9aa5b8">S3: 같은 깊이, 정지</text>
+<text x="390" y="201" class="s" text-anchor="middle">둘 다 안 닿음 → 0</text>
+
+<!-- S2: behind, static -->
+<text x="640" y="196" class="t" text-anchor="middle" fill="#ff7b72">S2: 뒤 (정지)</text>
+<text x="640" y="211" class="s" text-anchor="middle">C가 움직여 자리를 비울 때만 보인다</text>
+<circle cx="640" cy="228" r="8" fill="#ff7b72"/>
+<text x="640" y="250" class="s" text-anchor="middle">가중치 = reach(|v_C|, d)</text>
+
+<!-- distance d bracket between S1 and C -->
+<line x1="250" y1="240" x2="500" y2="240" stroke="#9aa5b8" stroke-width="1"/>
+<line x1="250" y1="235" x2="250" y2="245" stroke="#9aa5b8" stroke-width="1"/>
+<line x1="500" y1="235" x2="500" y2="245" stroke="#9aa5b8" stroke-width="1"/>
+<text x="375" y="236" class="s" text-anchor="middle">d (화면 거리)</text>
+<line x1="250" y1="112" x2="250" y2="118" stroke="#7ee787" stroke-width="1"/>
+<line x1="250" y1="170" x2="250" y2="235" stroke="#9aa5b8" stroke-width="1" stroke-dasharray="3 3" opacity="0.5"/>
+
+<!-- formula box -->
+<rect x="40" y="300" width="720" height="118" rx="6" fill="#232833" stroke="#3b4252"/>
+<text x="60" y="326" class="m">w(S) = [S가 뒤] · reach(|v_C|, d)  +  [S가 앞] · reach(|v_S|, d)</text>
+<text x="60" y="352" class="m">reach(v, d) = saturate(v − max(d − 1, 0))</text>
+<text x="420" y="352" class="s">← 속도 길이가 거리 d를 덮으면 1, 모자라면 0으로 부드럽게</text>
+<text x="60" y="378" class="m">[S가 앞] = saturate(0.5 + k·(z_C − z_S)),   [S가 뒤] = 1 − [S가 앞]</text>
+<text x="60" y="404" class="s">뎁스 비교도 계단이 아니라 경사(k)로 만든다. 경계에서 가중치가 0/1로 튀면 그대로 노이즈가 된다</text>
+</svg>

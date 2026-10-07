@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="320" viewBox="0 0 800 320" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="arp" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#c792ea"/></marker>
+  <marker id="aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f6a35a"/></marker>
+  <marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5cd6ff"/></marker>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+</style>
+<rect width="800" height="320" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">HDRP Camera Clamp: 카메라 성분만 줄이고 오브젝트 성분은 지킨다</text>
+<line x1="400" y1="50" x2="400" y2="240" stroke="#3b4252"/>
+
+<!-- before -->
+<text x="200" y="64" class="t" text-anchor="middle" font-weight="600">클램프 전</text>
+<circle cx="120" cy="200" r="4" fill="#e5e9f0"/>
+<line x1="120" y1="200" x2="311" y2="98" stroke="#5cd6ff" stroke-width="3" marker-end="url(#arc)" opacity="0.9"/>
+<line x1="120" y1="200" x2="289" y2="138" stroke="#c792ea" stroke-width="2.5" marker-end="url(#arp)"/>
+<line x1="289" y1="138" x2="311" y2="98" stroke="#f6a35a" stroke-width="2.5" marker-end="url(#aro)"/>
+<text x="196" y="186" class="s" fill="#c792ea">v_cam (카메라를 휙 돌림)</text>
+<text x="318" y="122" class="s" fill="#f6a35a">v_obj</text>
+<text x="150" y="112" class="s" fill="#5cd6ff">v_full = 버퍼의 값</text>
+<text x="200" y="232" class="s" text-anchor="middle">이대로 쓰면 화면 전체가 길게 뭉개진다</text>
+
+<!-- after -->
+<text x="600" y="64" class="t" text-anchor="middle" font-weight="600">클램프 후</text>
+<circle cx="500" cy="200" r="80" fill="none" stroke="#c792ea" stroke-width="1" stroke-dasharray="4 3" opacity="0.7"/>
+<text x="500" y="138" class="s" text-anchor="middle" fill="#c792ea">클램프 반경</text>
+<circle cx="500" cy="200" r="4" fill="#e5e9f0"/>
+<line x1="500" y1="200" x2="597" y2="133" stroke="#5cd6ff" stroke-width="3" marker-end="url(#arc)" opacity="0.9"/>
+<line x1="500" y1="200" x2="575" y2="173" stroke="#c792ea" stroke-width="2.5" marker-end="url(#arp)"/>
+<line x1="575" y1="173" x2="597" y2="133" stroke="#f6a35a" stroke-width="2.5" marker-end="url(#aro)"/>
+<text x="520" y="198" class="s" fill="#c792ea">v_cam′ (잘림)</text>
+<text x="604" y="156" class="s" fill="#f6a35a">v_obj 그대로</text>
+<text x="548" y="124" class="s" fill="#5cd6ff">최종 = v_cam′ + v_obj</text>
+<text x="600" y="232" class="s" text-anchor="middle">배경 번짐은 줄고, 움직이는 물체의 블러는 유지</text>
+
+<!-- legend -->
+<g class="s">
+  <line x1="40" y1="262" x2="64" y2="262" stroke="#c792ea" stroke-width="2.5"/>
+  <text x="70" y="266">v_cam: 뎁스 + 이전 VP 행렬로 다시 계산한 카메라 성분</text>
+  <line x1="400" y1="262" x2="424" y2="262" stroke="#f6a35a" stroke-width="2.5"/>
+  <text x="430" y="266">v_obj = v_full − v_cam (오브젝트 성분)</text>
+</g>
+<text x="400" y="306" class="s" text-anchor="middle">모드: None · 회전만 · 이동만 · 카메라 전체 · 회전/이동 따로 — 모드마다 별도의 클램프 값을 둔다</text>
+</svg>

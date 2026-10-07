@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="380" viewBox="0 0 800 380" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+  <marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5cd6ff"/></marker>
+  <linearGradient id="smear" x1="0" x2="1" y1="0" y2="0">
+    <stop offset="0" stop-color="#f6a35a" stop-opacity="0"/>
+    <stop offset="0.33" stop-color="#f6a35a" stop-opacity="1"/>
+    <stop offset="0.67" stop-color="#f6a35a" stop-opacity="1"/>
+    <stop offset="1" stop-color="#f6a35a" stop-opacity="0"/>
+  </linearGradient>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:15px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:13px}
+  .s{fill:#9aa5b8;font-size:12px}
+</style>
+<rect width="800" height="380" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">셔터가 열려 있는 동안 물체는 한 자리에 머물지 않는다</text>
+
+<!-- timeline -->
+<line x1="60" y1="92" x2="745" y2="92" stroke="#9aa5b8" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="400" y="74" width="150" height="36" fill="#5cd6ff" fill-opacity="0.16" stroke="#5cd6ff" stroke-dasharray="4 3"/>
+<text x="475" y="66" class="s" text-anchor="middle" fill="#5cd6ff">셔터 열림 (180° = 프레임 간격의 절반)</text>
+<g stroke="#e5e9f0" stroke-width="2">
+  <line x1="100" y1="82" x2="100" y2="102"/>
+  <line x1="400" y1="82" x2="400" y2="102"/>
+  <line x1="700" y1="82" x2="700" y2="102"/>
+</g>
+<text x="100" y="126" class="t" text-anchor="middle">프레임 N−1</text>
+<text x="400" y="126" class="t" text-anchor="middle">프레임 N</text>
+<text x="700" y="126" class="t" text-anchor="middle">프레임 N+1</text>
+
+<!-- left panel -->
+<rect x="40" y="150" width="340" height="170" rx="6" fill="#232833" stroke="#3b4252"/>
+<text x="210" y="176" class="t" text-anchor="middle" font-weight="600">게임이 그린 프레임: 순간 샘플</text>
+<line x1="70" y1="286" x2="350" y2="286" stroke="#6c7a92" stroke-width="2"/>
+<rect x="180" y="226" width="60" height="60" fill="#f6a35a"/>
+<line x1="245" y1="216" x2="300" y2="216" stroke="#5cd6ff" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arc)"/>
+<text x="272" y="208" class="s" text-anchor="middle" fill="#5cd6ff">v</text>
+<text x="210" y="310" class="s" text-anchor="middle">시간 t 한 순간의 위치. 경계가 날카롭다</text>
+
+<!-- right panel -->
+<rect x="420" y="150" width="340" height="170" rx="6" fill="#232833" stroke="#3b4252"/>
+<text x="590" y="176" class="t" text-anchor="middle" font-weight="600">실제 카메라: 셔터 동안의 적분</text>
+<line x1="450" y1="286" x2="730" y2="286" stroke="#6c7a92" stroke-width="2"/>
+<rect x="500" y="226" width="180" height="60" fill="url(#smear)"/>
+<line x1="500" y1="216" x2="680" y2="216" stroke="#5cd6ff" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arc)"/>
+<text x="590" y="208" class="s" text-anchor="middle" fill="#5cd6ff">셔터 동안 이동한 거리</text>
+<text x="590" y="310" class="s" text-anchor="middle">지나간 자리의 평균. 경계가 번진다</text>
+
+<text x="400" y="352" class="t" text-anchor="middle">포스트 프로세스 모션 블러 = 왼쪽 한 장 + 픽셀별 속도로 오른쪽을 흉내 내는 것</text>
+</svg>

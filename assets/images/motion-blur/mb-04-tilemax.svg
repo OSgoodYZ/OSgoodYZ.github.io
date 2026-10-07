@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="340" viewBox="0 0 800 340" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+  <marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5cd6ff"/></marker>
+  <marker id="arcs" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5cd6ff"/></marker>
+  <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#3b4252" stroke-width="1"/></pattern>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:13.5px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+</style>
+<rect width="800" height="340" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- stage A -->
+<g transform="translate(40,60)">
+  <text x="88" y="-14" class="h" text-anchor="middle">① 픽셀 속도</text>
+  <rect width="176" height="132" fill="#232833"/>
+  <ellipse cx="88" cy="66" rx="60" ry="26" fill="#f6a35a" fill-opacity="0.85"/>
+  <g stroke="#5cd6ff" stroke-width="1.5">
+    <line x1="50" y1="54" x2="70" y2="54" marker-end="url(#arcs)"/>
+    <line x1="80" y1="54" x2="100" y2="54" marker-end="url(#arcs)"/>
+    <line x1="110" y1="54" x2="130" y2="54" marker-end="url(#arcs)"/>
+    <line x1="40" y1="68" x2="60" y2="68" marker-end="url(#arcs)"/>
+    <line x1="70" y1="68" x2="90" y2="68" marker-end="url(#arcs)"/>
+    <line x1="100" y1="68" x2="120" y2="68" marker-end="url(#arcs)"/>
+    <line x1="50" y1="82" x2="70" y2="82" marker-end="url(#arcs)"/>
+    <line x1="80" y1="82" x2="100" y2="82" marker-end="url(#arcs)"/>
+    <line x1="110" y1="82" x2="130" y2="82" marker-end="url(#arcs)"/>
+  </g>
+  <rect width="176" height="132" fill="url(#grid)"/>
+  <rect width="176" height="132" fill="none" stroke="#3b4252"/>
+  <text x="88" y="156" class="s" text-anchor="middle">Velocity 버퍼 (픽셀마다)</text>
+  <text x="88" y="172" class="s" text-anchor="middle">주황 덩어리만 움직인다</text>
+</g>
+<line x1="226" y1="126" x2="300" y2="126" stroke="#9aa5b8" stroke-width="2" marker-end="url(#ar)"/>
+
+<!-- stage B -->
+<g transform="translate(310,60)">
+  <text x="88" y="-14" class="h" text-anchor="middle">② 타일 맥스</text>
+  <rect width="176" height="132" fill="#232833"/>
+  <rect x="44" y="44" width="44" height="44" fill="#5cd6ff" fill-opacity="0.25"/>
+  <rect x="88" y="44" width="44" height="44" fill="#5cd6ff" fill-opacity="0.25"/>
+  <g stroke="#5cd6ff" stroke-width="2.5">
+    <line x1="50" y1="66" x2="82" y2="66" marker-end="url(#arc)"/>
+    <line x1="94" y1="66" x2="126" y2="66" marker-end="url(#arc)"/>
+  </g>
+  <rect width="176" height="132" fill="url(#grid)"/>
+  <rect width="176" height="132" fill="none" stroke="#3b4252"/>
+  <text x="88" y="156" class="s" text-anchor="middle">타일당 가장 긴 속도 하나</text>
+  <text x="88" y="172" class="s" text-anchor="middle">해상도 1/16 · 1/32</text>
+</g>
+<line x1="496" y1="126" x2="570" y2="126" stroke="#9aa5b8" stroke-width="2" marker-end="url(#ar)"/>
+
+<!-- stage C -->
+<g transform="translate(580,60)">
+  <text x="88" y="-14" class="h" text-anchor="middle">③ 이웃 맥스 (3×3 팽창)</text>
+  <rect width="176" height="132" fill="#232833"/>
+  <rect x="0" y="0" width="176" height="132" fill="#5cd6ff" fill-opacity="0.1"/>
+  <rect x="44" y="44" width="44" height="44" fill="#5cd6ff" fill-opacity="0.25"/>
+  <rect x="88" y="44" width="44" height="44" fill="#5cd6ff" fill-opacity="0.25"/>
+  <g stroke="#5cd6ff" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.8">
+    <line x1="6" y1="22" x2="38" y2="22" marker-end="url(#arcs)"/>
+    <line x1="50" y1="22" x2="82" y2="22" marker-end="url(#arcs)"/>
+    <line x1="94" y1="22" x2="126" y2="22" marker-end="url(#arcs)"/>
+    <line x1="138" y1="22" x2="170" y2="22" marker-end="url(#arcs)"/>
+    <line x1="6" y1="66" x2="38" y2="66" marker-end="url(#arcs)"/>
+    <line x1="138" y1="66" x2="170" y2="66" marker-end="url(#arcs)"/>
+    <line x1="6" y1="110" x2="38" y2="110" marker-end="url(#arcs)"/>
+    <line x1="50" y1="110" x2="82" y2="110" marker-end="url(#arcs)"/>
+    <line x1="94" y1="110" x2="126" y2="110" marker-end="url(#arcs)"/>
+    <line x1="138" y1="110" x2="170" y2="110" marker-end="url(#arcs)"/>
+  </g>
+  <g stroke="#5cd6ff" stroke-width="2.5">
+    <line x1="50" y1="66" x2="82" y2="66" marker-end="url(#arc)"/>
+    <line x1="94" y1="66" x2="126" y2="66" marker-end="url(#arc)"/>
+  </g>
+  <rect width="176" height="132" fill="url(#grid)"/>
+  <rect width="176" height="132" fill="none" stroke="#3b4252"/>
+  <text x="88" y="156" class="s" text-anchor="middle">옆 타일까지 "닿을 수 있는" 속도 전파</text>
+  <text x="88" y="172" class="s" text-anchor="middle">점선 = 팽창으로 받은 값</text>
+</g>
+
+<text x="400" y="272" class="t" text-anchor="middle">③에서 회색 벽 타일도 "오른쪽으로 이만큼 긴 속도가 나한테 닿을 수 있다"를 알게 된다</text>
+<text x="400" y="296" class="s" text-anchor="middle">타일 크기: Unreal 16px · HDRP 32px. 타일 텍스처는 작아서 이 두 단계의 비용은 거의 0이다</text>
+<text x="400" y="318" class="s" text-anchor="middle">평균이 아니라 최대를 쓰는 이유: "이보다 먼 곳에서는 아무것도 못 온다"는 보장이 필요해서</text>
+</svg>

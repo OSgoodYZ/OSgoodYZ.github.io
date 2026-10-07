@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="340" viewBox="0 0 800 340" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="arc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#5cd6ff"/></marker>
+  <marker id="aro" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#f6a35a"/></marker>
+  <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse"><path d="M44 0H0V44" fill="none" stroke="#3b4252" stroke-width="1"/></pattern>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:13.5px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+</style>
+<rect width="800" height="340" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- grid area -->
+<g transform="translate(40,40)">
+  <rect width="352" height="220" fill="#232833"/>
+  <!-- quad T -->
+  <rect x="-40" y="88" width="300" height="44" fill="#5cd6ff" fill-opacity="0.22" stroke="#5cd6ff" stroke-width="1.2" transform="rotate(-20 110 110)"/>
+  <!-- quad U -->
+  <rect x="128" y="88" width="100" height="44" fill="#f6a35a" fill-opacity="0.3" stroke="#f6a35a" stroke-width="1.2" transform="rotate(40 178 110)"/>
+  <rect width="352" height="220" fill="url(#grid)"/>
+  <rect width="352" height="220" fill="none" stroke="#3b4252"/>
+  <!-- velocities -->
+  <line x1="110" y1="110" x2="251" y2="59" stroke="#5cd6ff" stroke-width="2.5" marker-end="url(#arc)"/>
+  <line x1="178" y1="110" x2="216" y2="142" stroke="#f6a35a" stroke-width="2.5" marker-end="url(#aro)"/>
+  <circle cx="110" cy="110" r="4" fill="#5cd6ff"/>
+  <circle cx="178" cy="110" r="4" fill="#f6a35a"/>
+  <text x="98" y="128" class="t" fill="#5cd6ff" font-weight="600">T</text>
+  <text x="166" y="128" class="t" fill="#f6a35a" font-weight="600">U</text>
+  <text x="262" y="48" class="s" fill="#5cd6ff">v_T (길다)</text>
+  <text x="222" y="152" class="s" fill="#f6a35a">v_U</text>
+  <!-- overlap marker -->
+  <circle cx="150" cy="100" r="15" fill="none" stroke="#e5e9f0" stroke-width="1.2" stroke-dasharray="3 2"/>
+  <line x1="150" y1="115" x2="150" y2="238" stroke="#e5e9f0" stroke-width="1" stroke-dasharray="3 3" opacity="0.6"/>
+</g>
+<text x="190" y="294" class="s" text-anchor="middle">겹친 타일: 깊이 테스트가 |v_T| 를 남긴다</text>
+<rect x="40" y="308" width="12" height="12" fill="#5cd6ff" fill-opacity="0.5" stroke="#5cd6ff"/>
+<text x="58" y="318" class="s">T의 쿼드, Z = |v_T|</text>
+<rect x="190" y="308" width="12" height="12" fill="#f6a35a" fill-opacity="0.5" stroke="#f6a35a"/>
+<text x="208" y="318" class="s">U의 쿼드, Z = |v_U|</text>
+
+<!-- explanation -->
+<text x="430" y="62" class="h">이웃 맥스를 깊이 테스트로 구하기</text>
+<g class="t">
+  <text x="430" y="94">① 타일마다 쿼드 1개를 인스턴스로 그린다</text>
+  <text x="430" y="120">② 버텍스 셰이더가 타일 맥스 속도 v를 읽어</text>
+  <text x="448" y="140">쿼드를 v 방향으로 양쪽 |v|만큼 늘린다</text>
+  <text x="430" y="166">③ 쿼드의 Z 값 = |v|</text>
+  <text x="430" y="192">④ 깊이 테스트 Greater → 겹친 타일에는</text>
+  <text x="448" y="212">가장 긴 속도만 살아남는다</text>
+</g>
+<g class="s">
+  <text x="430" y="250">3×3 게더보다 넓게, 그러나 속도가 실제로 닿는 곳에만 팽창한다</text>
+  <text x="430" y="270">max 연산을 고정 기능 하드웨어(깊이 테스트)에 떠넘긴 셈</text>
+  <text x="430" y="300">scatter를 끄면 3×3 게더 커널로 폴백 (r.MotionBlur.Scatter)</text>
+</g>
+</svg>
