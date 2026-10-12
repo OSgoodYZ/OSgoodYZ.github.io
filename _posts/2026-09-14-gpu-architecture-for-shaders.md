@@ -34,22 +34,6 @@ GPU는 **같은 프로그램을 수백만 번 돌리는** 기계입니다. 4K �
 
 셰이더 코드는 "픽셀 하나"의 관점으로 쓰지만, 하드웨어는 **스레드 32개(또는 64개)를 묶어 한 번에 같은 명령**을 실행합니다. 이 묶음을 NVIDIA는 워프(warp), AMD는 웨이브프론트(wavefront)라고 부르고, 이 글에서는 **웨이브**로 통일합니다. 웨이브 하나에 명령 포인터는 하나입니다. 32개 스레드는 항상 같은 명령을 같은 순간에 실행하고, 데이터만 다릅니다. 이것이 SIMT 모델입니다.
 
-이 포장이 새는 지점이 딱 하나 있습니다. **분기**입니다.
-
-<details markdown="1">
-<summary>벤더별 웨이브 폭</summary>
-
-| 벤더 | 이름 | 폭 |
-|---|---|---|
-| NVIDIA | Warp | 32 |
-| AMD GCN | Wavefront | 64 |
-| AMD RDNA | Wave32 / Wave64 | 32 또는 64 |
-| Intel Xe | SIMD8/16/32 | 8~32 (컴파일러가 선택) |
-| Apple | SIMD-group | 32 |
-| Arm Mali (Valhall 이후) | Warp | 16 |
-| Qualcomm Adreno | Wave | 64 (일부 128) |
-</details>
-
 ### 2-2. 분기 발산 — 양쪽을 다 실행한다
 
 ![균일 분기와 발산 분기의 레인 마스크와 비용](/assets/images/gpu-architecture/gpu-02-divergence.svg)
