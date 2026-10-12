@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<style>
+  .h{fill:#e5e9f0;font-size:14px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:12.5px}
+  .s{fill:#9aa5b8;font-size:11.5px}
+  .lbl{fill:#e5e9f0;font-size:11px}
+  .cu{fill:#2b3140;stroke:#5a6478;stroke-width:1}
+  .cu-hi{fill:#5cd6ff;fill-opacity:0.55;stroke:#5cd6ff;stroke-width:1.5}
+  .bar{fill:#2b3140;stroke:#6c7a92;stroke-width:1}
+  .wave{fill:#f6a35a;fill-opacity:0.35;stroke:#f6a35a;stroke-width:1}
+  .lane{fill:#5cd6ff;fill-opacity:0.55;stroke:#5cd6ff;stroke-width:1}
+</style>
+<rect width="800" height="400" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- ① GPU: many compute units -->
+<text x="24" y="30" class="h">① GPU 하나에는 연산 유닛이 수십 개</text>
+<rect x="24" y="46" width="300" height="300" rx="6" fill="none" stroke="#6c7a92" stroke-width="1.2"/>
+<text x="36" y="68" class="t" font-weight="600">GPU</text>
+<g class="cu">
+  <rect x="40" y="82" width="30" height="28"/><rect x="74" y="82" width="30" height="28"/><rect x="108" y="82" width="30" height="28"/><rect x="142" y="82" width="30" height="28"/><rect x="176" y="82" width="30" height="28"/><rect x="210" y="82" width="30" height="28"/><rect x="244" y="82" width="30" height="28"/><rect x="278" y="82" width="30" height="28"/>
+  <rect x="40" y="116" width="30" height="28"/><rect x="74" y="116" width="30" height="28"/><rect x="108" y="116" width="30" height="28"/><rect x="142" y="116" width="30" height="28"/><rect x="176" y="116" width="30" height="28"/><rect x="210" y="116" width="30" height="28"/><rect x="244" y="116" width="30" height="28"/><rect x="278" y="116" width="30" height="28"/>
+  <rect x="40" y="150" width="30" height="28"/><rect x="74" y="150" width="30" height="28"/><rect x="108" y="150" width="30" height="28"/><rect x="142" y="150" width="30" height="28"/><rect x="176" y="150" width="30" height="28"/><rect x="244" y="150" width="30" height="28"/><rect x="278" y="150" width="30" height="28"/>
+  <rect x="40" y="184" width="30" height="28"/><rect x="74" y="184" width="30" height="28"/><rect x="108" y="184" width="30" height="28"/><rect x="142" y="184" width="30" height="28"/><rect x="176" y="184" width="30" height="28"/><rect x="210" y="184" width="30" height="28"/><rect x="244" y="184" width="30" height="28"/><rect x="278" y="184" width="30" height="28"/>
+  <rect x="40" y="218" width="30" height="28"/><rect x="74" y="218" width="30" height="28"/><rect x="108" y="218" width="30" height="28"/><rect x="142" y="218" width="30" height="28"/><rect x="176" y="218" width="30" height="28"/><rect x="210" y="218" width="30" height="28"/><rect x="244" y="218" width="30" height="28"/><rect x="278" y="218" width="30" height="28"/>
+  <rect x="40" y="252" width="30" height="28"/><rect x="74" y="252" width="30" height="28"/><rect x="108" y="252" width="30" height="28"/><rect x="142" y="252" width="30" height="28"/><rect x="176" y="252" width="30" height="28"/><rect x="210" y="252" width="30" height="28"/><rect x="244" y="252" width="30" height="28"/><rect x="278" y="252" width="30" height="28"/>
+</g>
+<rect x="210" y="150" width="30" height="28" class="cu-hi"/>
+<text x="36" y="306" class="s">칸 하나가 연산 유닛(CU / SM). 서로 독립적으로</text>
+<text x="36" y="324" class="s">자기 웨이브들을 돌린다. L2 캐시와 VRAM은 공유.</text>
+
+<!-- zoom guides -->
+<line x1="240" y1="150" x2="350" y2="46" stroke="#5cd6ff" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.6"/>
+<line x1="240" y1="178" x2="350" y2="346" stroke="#5cd6ff" stroke-width="1" stroke-dasharray="4 3" stroke-opacity="0.6"/>
+
+<!-- ② inside one compute unit -->
+<text x="350" y="30" class="h">② 연산 유닛 하나의 속</text>
+<rect x="350" y="46" width="426" height="300" rx="6" fill="none" stroke="#5cd6ff" stroke-width="1.2" stroke-opacity="0.8"/>
+
+<!-- scheduler -->
+<rect x="366" y="60" width="394" height="28" class="bar"/>
+<text x="563" y="78" class="lbl" text-anchor="middle">스케줄러 — 다음에 돌릴 웨이브를 고른다</text>
+
+<!-- register file -->
+<text x="366" y="108" class="s">레지스터 파일 — 상주 웨이브가 나눠 쓴다 (몇 개나 들어가는가 = 점유율)</text>
+<rect x="366" y="114" width="394" height="40" class="bar"/>
+<rect x="368" y="116" width="95" height="36" class="wave"/><text x="415" y="138" class="lbl" text-anchor="middle">웨이브 A</text>
+<rect x="467" y="116" width="95" height="36" class="wave"/><text x="514" y="138" class="lbl" text-anchor="middle">웨이브 B</text>
+<rect x="566" y="116" width="95" height="36" class="wave"/><text x="613" y="138" class="lbl" text-anchor="middle">웨이브 C</text>
+<rect x="665" y="116" width="93" height="36" class="wave"/><text x="711" y="138" class="lbl" text-anchor="middle">웨이브 D</text>
+
+<!-- SIMD lanes -->
+<text x="366" y="176" class="s">SIMD 레인 — 한 웨이브의 스레드들이 같은 명령을 한꺼번에 실행한다</text>
+<g class="lane">
+  <rect x="366" y="182" width="10" height="22"/><rect x="378.3" y="182" width="10" height="22"/><rect x="390.6" y="182" width="10" height="22"/><rect x="402.9" y="182" width="10" height="22"/><rect x="415.2" y="182" width="10" height="22"/><rect x="427.5" y="182" width="10" height="22"/><rect x="439.8" y="182" width="10" height="22"/><rect x="452.1" y="182" width="10" height="22"/>
+  <rect x="464.4" y="182" width="10" height="22"/><rect x="476.7" y="182" width="10" height="22"/><rect x="489" y="182" width="10" height="22"/><rect x="501.3" y="182" width="10" height="22"/><rect x="513.6" y="182" width="10" height="22"/><rect x="525.9" y="182" width="10" height="22"/><rect x="538.2" y="182" width="10" height="22"/><rect x="550.5" y="182" width="10" height="22"/>
+  <rect x="562.8" y="182" width="10" height="22"/><rect x="575.1" y="182" width="10" height="22"/><rect x="587.4" y="182" width="10" height="22"/><rect x="599.7" y="182" width="10" height="22"/><rect x="612" y="182" width="10" height="22"/><rect x="624.3" y="182" width="10" height="22"/><rect x="636.6" y="182" width="10" height="22"/><rect x="648.9" y="182" width="10" height="22"/>
+  <rect x="661.2" y="182" width="10" height="22"/><rect x="673.5" y="182" width="10" height="22"/><rect x="685.8" y="182" width="10" height="22"/><rect x="698.1" y="182" width="10" height="22"/><rect x="710.4" y="182" width="10" height="22"/><rect x="722.7" y="182" width="10" height="22"/><rect x="735" y="182" width="10" height="22"/><rect x="747.3" y="182" width="10" height="22"/>
+</g>
+
+<!-- shared memory / L1 -->
+<rect x="366" y="220" width="394" height="28" class="bar"/>
+<text x="563" y="238" class="lbl" text-anchor="middle">공유 메모리 (groupshared) · L1 캐시</text>
+
+<!-- notes -->
+<text x="366" y="282" class="t">CPU의 코어에 해당하는 단위.</text>
+<text x="366" y="302" class="s">다만 명령을 스레드 하나씩이 아니라 웨이브 단위로 가져오고,</text>
+<text x="366" y="320" class="s">웨이브가 "상주한다"는 건 이 레지스터 파일에 자리를 잡았다는 뜻.</text>
+<text x="366" y="338" class="s">2-3절의 레이턴시 숨기기와 점유율은 모두 이 유닛 하나 안의 이야기.</text>
+
+<text x="400" y="384" class="s" text-anchor="middle">GPU 연산 유닛 — GPU 전체에서 본 위치와 유닛 하나의 구성</text>
+</svg>
