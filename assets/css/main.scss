@@ -71,3 +71,9 @@ html {
     margin-bottom: 1em;
   }
 }
+
+// 본문 h2 제목 아래 구분선 제거 (테마 기본: padding-bottom 0.5em + border-bottom 1px solid $border-color)
+.page__content h2 {
+  padding-bottom: 0;
+  border-bottom: none;
+}
