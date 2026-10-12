@@ -13,6 +13,8 @@ layout: archive
   - 소분류 앵커는 `{카테고리 slug}-{소분류 slug}` (예: #graphics-rendering).
     글 하단의 분류 링크(_includes/category-list.html)가 이 앵커를 가리킨다.
   - 정렬은 원본과 같이 글 수가 많은 순서.
+  - 맨 아래 스크립트가 URL 해시에 맞춰 해당 분류만 보이게 필터링한다 (All 또는 해시 없음 = 전체).
+    JS가 꺼져 있으면 원래대로 전체 목록 + 앵커 이동으로 동작한다.
 {% endcomment %}
 {% assign items_max = 0 %}
 {% for item in site.categories %}
@@ -22,6 +24,11 @@ layout: archive
 {% endfor %}
 
 <ul class="taxonomy__index">
+  <li>
+    <a href="#">
+      <strong>All</strong> <span class="taxonomy__count">{{ site.posts | size }}</span>
+    </a>
+  </li>
   {% for i in (1..items_max) reversed %}
     {% for item in site.categories %}
       {% if item[1].size == i %}
@@ -55,18 +62,20 @@ layout: archive
       <section id="{{ category_slug }}" class="taxonomy__section">
         <h2 class="archive__subtitle">{{ taxonomy[0] }}</h2>
         {% for group in direct %}
-          <div class="entries-{{ entries_layout }}">
+          <div class="taxonomy__group entries-{{ entries_layout }}">
             {% for post in group.items %}
               {% include archive-single.html locale=locale type=entries_layout %}
             {% endfor %}
           </div>
         {% endfor %}
         {% for group in subgroups %}
-          <h3 id="{{ category_slug }}-{{ group.name | slugify }}" class="taxonomy__subtitle">{{ group.name }}</h3>
-          <div class="entries-{{ entries_layout }}">
-            {% for post in group.items %}
-              {% include archive-single.html locale=locale type=entries_layout %}
-            {% endfor %}
+          <div id="{{ category_slug }}-{{ group.name | slugify }}" class="taxonomy__group">
+            <h3 class="taxonomy__subtitle">{{ group.name }}</h3>
+            <div class="entries-{{ entries_layout }}">
+              {% for post in group.items %}
+                {% include archive-single.html locale=locale type=entries_layout %}
+              {% endfor %}
+            </div>
           </div>
         {% endfor %}
         <a href="#page-title" class="back-to-top">{{ site.data.ui-text[locale].back_to_top | default: 'Back to Top' }} &uarr;</a>
@@ -74,3 +83,48 @@ layout: archive
     {% endif %}
   {% endfor %}
 {% endfor %}
+
+<script>
+(function () {
+  var index = document.querySelector('.taxonomy__index');
+  if (!index) { return; }
+  var links = index.querySelectorAll('a[href^="#"]');
+  var sections = document.querySelectorAll('.taxonomy__section');
+  var groups = document.querySelectorAll('.taxonomy__group');
+
+  // id가 카테고리 섹션이면 그 섹션만, 소분류 그룹이면 그 그룹만 보이게 한다. 빈 id는 전체.
+  // 섹션/그룹이 아닌 해시(#page-title 등)는 무시하고 false를 돌려준다.
+  function apply(id) {
+    var target = id ? document.getElementById(id) : null;
+    var isSection = !!target && target.classList.contains('taxonomy__section');
+    var isGroup = !!target && target.classList.contains('taxonomy__group');
+    if (id && !isSection && !isGroup) { return false; }
+    var section = target ? target.closest('.taxonomy__section') : null;
+    sections.forEach(function (s) { s.hidden = !!section && s !== section; });
+    groups.forEach(function (g) { g.hidden = isGroup && g !== target; });
+    links.forEach(function (a) {
+      a.classList.toggle('is-active', a.getAttribute('href').slice(1) === id);
+    });
+    return true;
+  }
+
+  // 색인 클릭: 앵커 점프 대신 해시만 바꾸고 필터를 적용한다 (색인이 화면에 남아 있도록).
+  index.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]');
+    if (!a) { return; }
+    var id = a.getAttribute('href').slice(1);
+    if (!apply(id)) { return; }
+    e.preventDefault();
+    history.pushState(null, '', id ? '#' + id : location.pathname + location.search);
+  });
+
+  window.addEventListener('hashchange', function () { apply(location.hash.slice(1)); });
+
+  // 글 하단 분류 링크(/posts/#graphics-rendering)로 들어온 경우: 필터를 적용하고 맨 위(색인)에서 시작한다.
+  var initial = location.hash.slice(1);
+  if (apply(initial) && initial) {
+    window.scrollTo(0, 0);
+    window.addEventListener('load', function () { window.scrollTo(0, 0); }, { once: true });
+  }
+})();
+</script>
