@@ -5,7 +5,6 @@ subcategory: Optimization
 tags: [GPU, Shader, SIMD, Wavefront, Occupancy, Bandwidth, TBDR, HLSL, GLSL]
 toc: true
 toc_sticky: true
-wip: true
 ---
 
 셰이더 최적화 팁은 널려 있습니다. "분기를 피하라", "half를 쓰라", "텍스처 읽기를 줄여라". 문제는 이 팁들이 **왜** 맞는지, 그리고 **언제 틀리는지**를 알려주지 않는다는 점입니다. 분기는 어떤 때는 공짜고 어떤 때는 셰이더 비용을 두 배로 만듭니다. 그 차이를 설명하는 것은 팁이 아니라 **하드웨어의 구조**입니다.
