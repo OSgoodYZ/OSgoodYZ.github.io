@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<style>
+  .h{fill:#e5e9f0;font-size:15px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:13px}
+  .s{fill:#9aa5b8;font-size:12px}
+  .c{fill:#1c2029;font-size:12px;font-weight:600}
+</style>
+<rect width="800" height="400" rx="8" fill="#1c2029" stroke="#3b4252"/>
+<text x="24" y="30" class="h">샘플 하나에 무엇을 저장하나</text>
+
+<!-- G-Buffer -->
+<text x="40" y="78" class="t" font-weight="600">G-Buffer</text>
+<text x="40" y="96" class="s">표면 속성을 계산해서 저장</text>
+<g>
+  <rect x="200" y="62" width="192" height="40" fill="#f6a35a"/>
+  <text x="296" y="87" class="c" text-anchor="middle">position (8B)</text>
+  <rect x="392" y="62" width="96" height="40" fill="#f6a35a" fill-opacity="0.8" stroke="#1c2029"/>
+  <text x="440" y="87" class="c" text-anchor="middle">normal</text>
+  <rect x="488" y="62" width="96" height="40" fill="#f6a35a" fill-opacity="0.65" stroke="#1c2029"/>
+  <text x="536" y="87" class="c" text-anchor="middle">diffuse</text>
+  <rect x="584" y="62" width="96" height="40" fill="#f6a35a" fill-opacity="0.5" stroke="#1c2029"/>
+  <text x="632" y="87" class="c" text-anchor="middle">specular</text>
+  <rect x="680" y="62" width="96" height="40" fill="#f6a35a" fill-opacity="0.35" stroke="#1c2029"/>
+  <text x="728" y="87" class="c" text-anchor="middle">tri ID</text>
+</g>
+<text x="488" y="124" class="s" text-anchor="middle">24 bytes / sample (논문의 비교용 G-Buffer)</text>
+
+<!-- Visibility Buffer -->
+<text x="40" y="168" class="t" font-weight="600">Visibility Buffer</text>
+<text x="40" y="186" class="s">"누가 보이는가"만 저장</text>
+<rect x="200" y="152" width="96" height="40" fill="#5cd6ff"/>
+<text x="248" y="177" class="c" text-anchor="middle">inst + tri ID</text>
+<text x="310" y="177" class="s">4 bytes / sample</text>
+
+<line x1="24" y1="222" x2="776" y2="222" stroke="#3b4252"/>
+
+<!-- totals -->
+<text x="24" y="252" class="h">1080p, 픽셀당 샘플 8개(8x MSAA)일 때 버퍼 크기</text>
+<rect x="200" y="276" width="560" height="34" fill="#f6a35a"/>
+<text x="40" y="298" class="t">G-Buffer</text>
+<text x="748" y="298" class="c" text-anchor="end">398 MB</text>
+<rect x="200" y="326" width="90" height="34" fill="#5cd6ff"/>
+<text x="40" y="348" class="t">Visibility Buffer</text>
+<text x="300" y="348" class="t">64 MB</text>
+<text x="400" y="384" class="s" text-anchor="middle">이 버퍼를 매 프레임 쓰고 다시 읽는다. 크기가 곧 대역폭이다</text>
+</svg>

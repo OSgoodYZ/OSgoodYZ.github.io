@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="420" viewBox="0 0 800 420" font-family="'Segoe UI','Malgun Gothic','Apple SD Gothic Neo',sans-serif">
+<defs>
+  <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9aa5b8"/></marker>
+</defs>
+<style>
+  .h{fill:#e5e9f0;font-size:15px;font-weight:600}
+  .t{fill:#e5e9f0;font-size:13px}
+  .s{fill:#9aa5b8;font-size:12px}
+  .box{fill:#232833;stroke:#3b4252}
+  .work{fill:#f6a35a;fill-opacity:0.16;stroke:#f6a35a}
+  .mem{fill:#5cd6ff;fill-opacity:0.12;stroke:#5cd6ff;stroke-dasharray:4 3}
+  .a{stroke:#9aa5b8;stroke-width:1.6;fill:none;marker-end:url(#ar)}
+</style>
+<rect width="800" height="420" rx="8" fill="#1c2029" stroke="#3b4252"/>
+
+<!-- G-buffer pipeline -->
+<text x="24" y="32" class="h">G-Buffer 방식</text>
+<rect x="24" y="52" width="250" height="56" rx="5" class="work"/>
+<text x="149" y="76" class="t" text-anchor="middle">Geometry 패스</text>
+<text x="149" y="96" class="s" text-anchor="middle">래스터 + 텍스처 읽기 + 표면 계산</text>
+<rect x="306" y="52" width="170" height="56" rx="5" class="mem"/>
+<text x="391" y="76" class="t" text-anchor="middle">G-Buffer</text>
+<text x="391" y="96" class="s" text-anchor="middle">24B × 샘플 수</text>
+<rect x="508" y="52" width="268" height="56" rx="5" class="work"/>
+<text x="642" y="76" class="t" text-anchor="middle">Lighting 패스</text>
+<text x="642" y="96" class="s" text-anchor="middle">G-Buffer를 읽어 조명 계산</text>
+<line x1="274" y1="80" x2="302" y2="80" class="a"/>
+<line x1="476" y1="80" x2="504" y2="80" class="a"/>
+<text x="149" y="132" class="s" text-anchor="middle">가려질 픽셀도 텍스처를 읽는다</text>
+<text x="391" y="132" class="s" text-anchor="middle">크고 무겁다</text>
+
+<line x1="24" y1="156" x2="776" y2="156" stroke="#3b4252"/>
+
+<!-- VB pipeline -->
+<text x="24" y="188" class="h">Visibility Buffer 방식</text>
+<rect x="24" y="208" width="170" height="56" rx="5" class="work"/>
+<text x="109" y="232" class="t" text-anchor="middle">① Visibility 패스</text>
+<text x="109" y="252" class="s" text-anchor="middle">래스터만. ID와 depth</text>
+<rect x="222" y="208" width="130" height="56" rx="5" class="mem"/>
+<text x="287" y="232" class="t" text-anchor="middle">VisBuffer</text>
+<text x="287" y="252" class="s" text-anchor="middle">4B × 샘플 수</text>
+<rect x="380" y="208" width="170" height="56" rx="5" class="work"/>
+<text x="465" y="232" class="t" text-anchor="middle">② Worklist 패스</text>
+<text x="465" y="252" class="s" text-anchor="middle">머티리얼별 타일 목록</text>
+<rect x="578" y="208" width="198" height="56" rx="5" class="work"/>
+<text x="677" y="232" class="t" text-anchor="middle">③ Shading 패스</text>
+<text x="677" y="252" class="s" text-anchor="middle">머티리얼마다 한 번씩</text>
+<line x1="194" y1="236" x2="218" y2="236" class="a"/>
+<line x1="352" y1="236" x2="376" y2="236" class="a"/>
+<line x1="550" y1="236" x2="574" y2="236" class="a"/>
+<path d="M287 264 V292 H660 V268" class="a"/>
+<text x="474" y="308" class="s" text-anchor="middle">ID를 직접 읽는다</text>
+
+<rect x="578" y="324" width="198" height="56" rx="5" class="mem"/>
+<text x="677" y="348" class="t" text-anchor="middle">Index / Vertex 버퍼</text>
+<text x="677" y="368" class="s" text-anchor="middle">보이는 삼각형만 읽음</text>
+<line x1="700" y1="324" x2="700" y2="268" class="a"/>
+
+<rect x="24" y="324" width="520" height="56" rx="5" class="box"/>
+<text x="40" y="348" class="t">셰이딩 패스 안에서 하는 일</text>
+<text x="40" y="368" class="s">ID 해독 → 삼각형 로드 → 버텍스 셰이더 → barycentric → 보간 → 표면 → 조명</text>
+<text x="400" y="406" class="s" text-anchor="middle">주황 = 연산 패스, 파랑 점선 = 메모리</text>
+</svg>
